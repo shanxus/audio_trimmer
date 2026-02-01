@@ -54,9 +54,7 @@ final class AudioServiceImpl: AudioService {
         })
     }
     
-    func pause() {
-        guard let config = audioConfig else { return }
-        
+    func pause() {                
         guard state.isPlaying else { return }
         print("[AudioServiceImpl] pause")
         state.isPlaying = false;

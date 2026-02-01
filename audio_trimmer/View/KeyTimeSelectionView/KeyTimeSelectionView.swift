@@ -25,9 +25,9 @@ struct KeyTimeSelectionView: View {
                 .foregroundStyle(Color.white)
             Spacer()
                 .frame(height: 5)
-            VideoProgressView(keyTimes: state.keyTimes, onTap: { (progress: Double) in
+            VideoProgressView(keyTimes: state.keyTimes, onTapKeyTimeProgress: { (progress: Double) in
                 onUserSeekToProgress(progress)
-            })
+            }).padding(.horizontal, 30)
         }.background(Color.darkGrey)
     }
 }

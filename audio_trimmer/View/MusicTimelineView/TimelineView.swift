@@ -59,21 +59,16 @@ struct TimelineView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             .onChange(of: state.programmaticScrollProgress) { _, newValue in
-                
-                guard state.programmaticScrollProgress.isValid else { return }
-                                
+                print("onChange of programmaticScrollProgress, isUserScrolling: \(isUserScrolling)")
+                                                                
                 guard !isUserScrolling else { return }
-                
-                print("onChange of programmaticScrollProgress")
                 
                 isProgrammaticScrolling = true
                 isUserScrolling = false
                 
-                var newPosition = state.programmaticScrollProgress.value * timelineViewWidth;
+                var newPosition = state.programmaticScrollProgress * timelineViewWidth;
                 newPosition = min(newPosition, timelineViewWidth - trimmedAreaWidth)
                 scrollPosition.scrollTo(x: newPosition)
-                
-                state.programmaticScrollProgress.value = -1
             }
         }
         .background(.black)

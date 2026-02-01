@@ -10,7 +10,7 @@ import SwiftUI
 struct VideoProgressView: View {
     let keyTimes: [Double]
     let height: CGFloat = 24
-    let onTap: (Double) -> Void
+    let onTapKeyTimeProgress: (Double) -> Void
     
     var body: some View {
         ZStack {
@@ -24,7 +24,7 @@ struct VideoProgressView: View {
                             KeyTimeIndicator()
                                 .position(x: keyTime * geo.size.width, y: geo.size.height / 2)
                                 .onTapGesture {
-                                    onTap(keyTime)
+                                    onTapKeyTimeProgress(keyTime)
                                 }
                         }
                     }

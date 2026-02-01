@@ -28,7 +28,7 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
         super.init()
         
         let timelineConfig = TimelineConfig(trimmedDurationRatio: appConfig.trimmedRangeRatio)
-        timelineViewState = TimelineViewState(timelineConfig: timelineConfig, programmaticScrollProgress: ProgrammaticScrollProgress.default, trimmedDuration: appConfig.trimmedDuration)
+        timelineViewState = TimelineViewState(timelineConfig: timelineConfig, programmaticScrollProgress: 0, trimmedDuration: appConfig.trimmedDuration)
         
         keyTimeSelectionState = KeyTimeSelectionState(keyTimes: appConfig.keyTimes, trimmedRatio: appConfig.trimmedRangeRatio, playbackProgress: 0)
         
@@ -36,7 +36,7 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
             print("[AudioTrimmerViewModelImpl] Received new state, isPlaying: \(state.isPlaying), currentPlaybackTime: \(state.currentPlaybackTime)")
         
             let progress = state.currentPlaybackTime / Double(appConfig.trackLenght)
-            self?.timelineViewState.programmaticScrollProgress.value = progress
+            self?.timelineViewState.programmaticScrollProgress = progress
             self?.timelineViewState.playbackTime = state.currentPlaybackTime
             
             self?.keyTimeSelectionState.playbackProgress = progress
