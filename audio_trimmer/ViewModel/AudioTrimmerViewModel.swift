@@ -56,6 +56,8 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
     
     override
     func seek(toProgressRatio ratio: Double) {
-        audioService.seek(withRatio: ratio)
+        let maxSeekProgress = 1 - appConfig.trimmedRangeRatio
+        let clampedRatio = min(maxSeekProgress, max(0, ratio))
+        audioService.seek(withRatio: clampedRatio)
     }
 }
