@@ -18,7 +18,7 @@ extension Double {
     }
     
     var formattedProgress: String {
-        return String(format: "%.1f", self)
+        return self.formatted(.percent.precision(.fractionLength(1)))        
     }
 }
 

@@ -8,15 +8,25 @@
 struct KeyTimeSelectionState {
     var keyTimes: [Double]
     var trimmedRatio: Double
-    var playbackProgress: Double
+    var playbackProgressRatio: Double
     
-    var currentPlaybackProgress: String {
-        return playbackProgress.formattedProgress
+    private var validDisplayingPlaybackProgress: Double {
+        let upperBound: Double = 1 - trimmedRatio
+        let lowerBound: Double = 0
+        return min(max(playbackProgressRatio, lowerBound), upperBound)
     }
     
-    var selectedEndTimeProgress: String {
-        return (playbackProgress + trimmedRatio).formattedProgress        
+    var currentPlaybackProgressLabelValue: String {
+        return validDisplayingPlaybackProgress.formattedProgress
     }
     
-    static let `default` = KeyTimeSelectionState(keyTimes: [], trimmedRatio: 0, playbackProgress: 0)
+    var selectedStartTimeProgressLabelValue: String {
+        return validDisplayingPlaybackProgress.formattedProgress
+    }
+    
+    var selectedEndTimeProgressLabelValue: String {
+        return (validDisplayingPlaybackProgress + trimmedRatio).formattedProgress
+    }
+    
+    static let `default` = KeyTimeSelectionState(keyTimes: [], trimmedRatio: 0, playbackProgressRatio: 0)
 }

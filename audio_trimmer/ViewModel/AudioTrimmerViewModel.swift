@@ -27,10 +27,10 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
         self.appConfig = appConfig
         super.init()
         
-        let timelineConfig = TimelineConfig(trimmedDurationRatio: appConfig.trimmedRangeRatio)
+        let timelineConfig = TimelineConfig(trimmedDurationRatio: appConfig.trimmedRangeRatio, trackDuration: appConfig.trackLenght)
         timelineViewState = TimelineViewState(timelineConfig: timelineConfig, programmaticScrollProgress: 0, trimmedDuration: appConfig.trimmedDuration)
         
-        keyTimeSelectionState = KeyTimeSelectionState(keyTimes: appConfig.keyTimes, trimmedRatio: appConfig.trimmedRangeRatio, playbackProgress: 0)
+        keyTimeSelectionState = KeyTimeSelectionState(keyTimes: appConfig.keyTimes, trimmedRatio: appConfig.trimmedRangeRatio, playbackProgressRatio: 0)
         
         audioService.statePublisher.sink { [weak self] state in
             print("[AudioTrimmerViewModelImpl] Received new state, isPlaying: \(state.isPlaying), currentPlaybackTime: \(state.currentPlaybackTime)")
@@ -39,7 +39,7 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
             self?.timelineViewState.programmaticScrollProgress = progress
             self?.timelineViewState.playbackTime = state.currentPlaybackTime
             
-            self?.keyTimeSelectionState.playbackProgress = progress
+            self?.keyTimeSelectionState.playbackProgressRatio = progress
             
         }.store(in: &cancellables)
     }

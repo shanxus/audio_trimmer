@@ -7,6 +7,7 @@
 
 struct TimelineConfig {
     var trimmedDurationRatio: Double
+    var trackDuration: Int
     
-    static let `default` = TimelineConfig(trimmedDurationRatio: 0)
+    static let `default` = TimelineConfig(trimmedDurationRatio: 0, trackDuration: 0)
 }

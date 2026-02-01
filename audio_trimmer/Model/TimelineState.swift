@@ -14,12 +14,24 @@ struct TimelineViewState {
     
     let waveSamples: [Double] = Array(repeating: [0.2, 0.5, 0.9, 0.4, 0.7, 0.3, 0.8], count: 50).flatMap { $0 }
     
-    var currentPlaybackTimeInMMSS: String {
-        return playbackTime.mmss
+    private var validDisplayingPlaybackTime: Double {
+        let upperBound = Double(timelineConfig.trackDuration) - trimmedDuration
+        let lowerBound: Double = 0
+        
+        let clampedValue = min(max(playbackTime, lowerBound), upperBound)
+        return clampedValue
     }
     
-    var selectedEndTimeInMMSS: String {
-        return (playbackTime + trimmedDuration).mmss
+    var currentPlaybackTimeLabelValue: String {
+        return validDisplayingPlaybackTime.mmss
+    }
+    
+    var selectedStartTimeLabelValue: String {
+        return validDisplayingPlaybackTime.mmss
+    }
+    
+    var selectedEndTimeLabelValue: String {
+        return (validDisplayingPlaybackTime + trimmedDuration).mmss
     }
     
     static let `default` = TimelineViewState(timelineConfig: .default, programmaticScrollProgress: 0)
