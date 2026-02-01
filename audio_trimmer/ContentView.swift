@@ -7,18 +7,40 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+struct AppConfig {
+    var trackLenght: Int
+    var keyTimes: [Double]
+    var trimmedRangeRatio: Double
+    
+    var trimmedDuration: Double {
+        return trimmedRangeRatio * Double(trackLenght)
     }
+    
+    static let `default` = AppConfig(trackLenght: 15, keyTimes: [0, 0.5, 0.75, 1], trimmedRangeRatio: 0.1)
 }
 
-#Preview {
-    ContentView()
+struct ContentView: View {
+    @ObservedObject var vm: AudioTrimmerViewModel = AudioTrimmerViewModelImpl(audioService: AudioServiceImpl(), appConfig: .default)
+    
+    var body: some View {
+        VStack {
+            Button("play") {
+                vm.play()
+            }
+            
+            Button("pause") {
+                vm.pause()
+            }
+            
+            KeyTimeSelectionView(state: $vm.keyTimeSelectionState) { progress in
+                vm.seek(toProgressRatio: progress)
+            }
+            .frame(height: 150)
+                        
+            MusicTimelineView(state: $vm.timelineViewState, onUserSeekToProgress: { (progress: Double) in                
+                vm.seek(toProgressRatio: progress)
+            })
+            .frame(height: 150)
+        }
+    }
 }

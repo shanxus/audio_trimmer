@@ -13,27 +13,27 @@ protocol AudioService {
     func pause()
     func seek(withRatio ratio: Double)
     
+    func setupConfig(_ config: AudioConfig)
+    
     var state: AudioServiceState { get }
     var statePublisher: AnyPublisher<AudioServiceState, Never> { get }
 }
 
 final class AudioServiceImpl: AudioService {
-    private let audioConfig: AudioConfig
+    private var audioConfig: AudioConfig?
     
     private let fps: Double = 30
     private var timer: Timer?
     
     @Published private(set) var state: AudioServiceState = .initial
     
-    init(withConfig config: AudioConfig) {
-        audioConfig = config
-    }
-    
     var statePublisher: AnyPublisher<AudioServiceState, Never> {
         return $state.eraseToAnyPublisher()
     }
     
     func play() {
+        guard let config = audioConfig else { return }
+        
         guard !state.isPlaying else { return }
         print("[AudioServiceImpl] play")
         state.isPlaying = true
@@ -43,7 +43,7 @@ final class AudioServiceImpl: AudioService {
             guard let weakSelf = self else { return }
                         
             var newPlaybackTime = weakSelf.state.currentPlaybackTime + interval
-            let trackLength = Double(weakSelf.audioConfig.totalTrackLength)
+            let trackLength = Double(config.totalTrackLength)
             
             let playToEnd = newPlaybackTime >= trackLength
             newPlaybackTime = playToEnd ? trackLength : newPlaybackTime
@@ -55,6 +55,8 @@ final class AudioServiceImpl: AudioService {
     }
     
     func pause() {
+        guard let config = audioConfig else { return }
+        
         guard state.isPlaying else { return }
         print("[AudioServiceImpl] pause")
         state.isPlaying = false;
@@ -63,6 +65,11 @@ final class AudioServiceImpl: AudioService {
     }
     
     func seek(withRatio ratio: Double) {
-        
+        guard let config = audioConfig else { return }
+        state.currentPlaybackTime = Double(config.totalTrackLength) * ratio
+    }
+    
+    func setupConfig(_ config: AudioConfig) {
+        audioConfig = config
     }
 }
