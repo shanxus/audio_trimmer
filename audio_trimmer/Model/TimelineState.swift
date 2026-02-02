@@ -14,6 +14,20 @@ struct TimelineViewState {
     
     let waveSamples: [Double] = Array(repeating: [0.2, 0.5, 0.9, 0.4, 0.7, 0.3, 0.8], count: 50).flatMap { $0 }
     
+    func copyWith(
+        timelineConfig: TimelineConfig? = nil,
+        programmaticScrollProgress: Double? = nil,
+        playbackTime: Double? = nil,
+        trimmedDuration: Double? = nil
+    ) -> TimelineViewState {
+        return TimelineViewState(
+            timelineConfig: timelineConfig ?? self.timelineConfig,
+            programmaticScrollProgress: programmaticScrollProgress ?? self.programmaticScrollProgress,
+            playbackTime: playbackTime ?? self.playbackTime,
+            trimmedDuration: trimmedDuration ?? self.trimmedDuration
+        )
+    }
+    
     private var validDisplayingPlaybackTime: Double {
         let upperBound = Double(timelineConfig.trackDuration) - trimmedDuration
         let lowerBound: Double = 0

@@ -42,7 +42,6 @@ struct TimelineView: View {
                     }
                 }
                 .scrollPosition($scrollPosition)
-                .animation(.default, value: scrollPosition.x)
                 .simultaneousGesture(userDragGesture)
                 .onScrollGeometryChange(for: CGFloat.self) { scrollViewGeo in
                     scrollViewGeo.contentOffset.x

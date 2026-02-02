@@ -36,7 +36,7 @@ final class AudioServiceImpl: AudioService {
         
         guard !state.isPlaying else { return }
         print("[AudioServiceImpl] play")
-        state.isPlaying = true
+        state = state.copyWith(isPlaying: true)
         
         let interval: TimeInterval = 1.0 / fps
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: {[weak self] _ in
@@ -47,7 +47,8 @@ final class AudioServiceImpl: AudioService {
             
             let playToEnd = newPlaybackTime >= trackLength
             newPlaybackTime = playToEnd ? trackLength : newPlaybackTime
-            weakSelf.state.currentPlaybackTime = newPlaybackTime
+            weakSelf.state = weakSelf.state.copyWith(currentPlaybackTime: newPlaybackTime, playbackTimeUpdateAction: .playback)
+            
             if playToEnd {
                 weakSelf.pause()
             }
@@ -64,7 +65,10 @@ final class AudioServiceImpl: AudioService {
     
     func seek(withRatio ratio: Double) {
         guard let config = audioConfig else { return }
-        state.currentPlaybackTime = Double(config.totalTrackLength) * ratio
+        state = state.copyWith(
+            currentPlaybackTime: Double(config.totalTrackLength) * ratio,
+            playbackTimeUpdateAction: .seek
+        )
     }
     
     func setupConfig(_ config: AudioConfig) {

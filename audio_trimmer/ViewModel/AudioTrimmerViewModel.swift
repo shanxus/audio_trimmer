@@ -35,11 +35,18 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
         audioService.statePublisher.sink { [weak self] state in
             print("[AudioTrimmerViewModelImpl] Received new state, isPlaying: \(state.isPlaying), currentPlaybackTime: \(state.currentPlaybackTime)")
         
+            guard let weakSelf = self else { return }
             let progress = state.currentPlaybackTime / Double(appConfig.trackLenght)
-            self?.timelineViewState.programmaticScrollProgress = progress
-            self?.timelineViewState.playbackTime = state.currentPlaybackTime
             
-            self?.keyTimeSelectionState.playbackProgressRatio = progress
+            if state.playbackTimeUpdateAction == .seek {
+                weakSelf.timelineViewState = weakSelf.timelineViewState.copyWith(
+                    programmaticScrollProgress: progress,
+                    playbackTime: state.currentPlaybackTime
+                )
+                weakSelf.keyTimeSelectionState = weakSelf.keyTimeSelectionState.copyWith(
+                    playbackProgressRatio: progress
+                )
+            }
             
         }.store(in: &cancellables)
     }
