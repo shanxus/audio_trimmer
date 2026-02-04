@@ -42,7 +42,6 @@ struct TimelineView: View {
                     }
                 }
                 .scrollPosition($scrollPosition)
-                .simultaneousGesture(userDragGesture)
                 .onScrollGeometryChange(for: CGFloat.self) { scrollViewGeo in
                     scrollViewGeo.contentOffset.x
                 } action: {_, scrollOffset in
@@ -59,58 +58,21 @@ struct TimelineView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             .onChange(of: state.programmaticScrollProgress) { _, newValue in
                 print("onChange of programmaticScrollProgress, isUserScrolling: \(isUserScrolling)")
-                                                                
-                guard !isUserScrolling else { return }
                 
-                isProgrammaticScrolling = true
-                isUserScrolling = false
+                guard state.programmaticScrollProgress.isValid(), let programmaticScrollProgressValue = state.programmaticScrollProgress.value else { return }
                 
-                var newPosition = state.programmaticScrollProgress * timelineViewWidth;
+                var newPosition = programmaticScrollProgressValue * timelineViewWidth;
                 newPosition = min(newPosition, timelineViewWidth - trimmedAreaWidth)
                 scrollPosition.scrollTo(x: newPosition)
+                state.programmaticScrollProgress.setInvalid()
             }
         }
         .background(.black)
     }
     
-    private var userDragGesture: some Gesture {
-        DragGesture(minimumDistance: 1)
-            .onChanged { value in
-                if !isProgrammaticScrolling {
-                    isUserScrolling = true
-                }
-            }
-    }
-    
-    private func onScrollOffsetChange(_ offset: CGFloat, total: CGFloat) {        
-        if isUserScrolling {
-            let progress = offset / total
-            print("will onUserSeekToProgress: \(progress)")
-            onUserSeekToProgress(progress)
-        }
-        
-        triggerStopDebounce()
-    }
-    
-    private func triggerStopDebounce() {
-        stopTask?.cancel()
-        stopTask = Task { @MainActor in
-            // 180 ms
-            try? await Task.sleep(nanoseconds: 180_000_000)
-            if Task.isCancelled { return }
-            onScrollStopped()
-        }
-    }
-    
-    private func onScrollStopped() {
-        if isProgrammaticScrolling {
-            isProgrammaticScrolling = false
-            return
-        }
-        
-        if isUserScrolling {
-            isUserScrolling = false
-        }
+    private func onScrollOffsetChange(_ offset: CGFloat, total: CGFloat) {
+        let progress = offset / total
+        onUserSeekToProgress(progress)
     }
 }
 

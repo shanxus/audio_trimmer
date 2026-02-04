@@ -25,8 +25,8 @@ struct AudioTrimmerScreen: View {
             }
             .frame(height: 150)
                         
-            MusicTimelineView(state: $vm.timelineViewState, onUserSeekToProgress: { (progress: Double) in                
-                vm.seek(toProgressRatio: progress)
+            MusicTimelineView(state: $vm.timelineViewState, onUserSeekToProgress: { (progress: Double) in                                
+                vm.onTimelineScroll(toRatio: progress)
             })
             .frame(height: 150)
         }

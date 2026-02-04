@@ -7,10 +7,17 @@
 
 import Combine
 
+enum SeekActionSource {
+    case KeyTimeSelection
+    case Timeline
+}
+
 class AudioTrimmerViewModel: ObservableObject {
     func play() {}
     func pause() {}
     func seek(toProgressRatio ratio: Double) {}
+    
+    func onTimelineScroll(toRatio ratio: Double) {}
     
     @Published var keyTimeSelectionState: KeyTimeSelectionState = .default
     @Published var timelineViewState: TimelineViewState = .default
@@ -28,7 +35,7 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
         super.init()
         
         let timelineConfig = TimelineConfig(trimmedDurationRatio: appConfig.trimmedRangeRatio, trackDuration: appConfig.trackLenght)
-        timelineViewState = TimelineViewState(timelineConfig: timelineConfig, programmaticScrollProgress: 0, trimmedDuration: appConfig.trimmedDuration)
+        timelineViewState = TimelineViewState(timelineConfig: timelineConfig, programmaticScrollProgress: ProgrammaticScrollProgress(value: 0), trimmedDuration: appConfig.trimmedDuration)
         
         keyTimeSelectionState = KeyTimeSelectionState(keyTimes: appConfig.keyTimes, trimmedRatio: appConfig.trimmedRangeRatio, playbackProgressRatio: 0)
         
@@ -39,13 +46,16 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
             let progress = state.currentPlaybackTime / Double(appConfig.trackLenght)
             
             if state.playbackTimeUpdateAction == .seek {
-                weakSelf.timelineViewState = weakSelf.timelineViewState.copyWith(
-                    programmaticScrollProgress: progress,
-                    playbackTime: state.currentPlaybackTime
-                )
-                weakSelf.keyTimeSelectionState = weakSelf.keyTimeSelectionState.copyWith(
-                    playbackProgressRatio: progress
-                )
+                if state.seekActionSource == .KeyTimeSelection {
+                    weakSelf.timelineViewState = weakSelf.timelineViewState.copyWith(
+                        programmaticScrollProgress: ProgrammaticScrollProgress(value: progress),
+                        playbackTime: state.currentPlaybackTime
+                    )
+                } else if state.seekActionSource == .Timeline {
+                    weakSelf.keyTimeSelectionState = weakSelf.keyTimeSelectionState.copyWith(
+                        playbackProgressRatio: progress
+                    )
+                }
             }
             
         }.store(in: &cancellables)
@@ -65,6 +75,11 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
     func seek(toProgressRatio ratio: Double) {
         let maxSeekProgress = 1 - appConfig.trimmedRangeRatio
         let clampedRatio = min(maxSeekProgress, max(0, ratio))
-        audioService.seek(withRatio: clampedRatio)
+        audioService.seek(withRatio: clampedRatio, source: .KeyTimeSelection)
+    }
+    
+    override
+    func onTimelineScroll(toRatio ratio: Double) {        
+        audioService.seek(withRatio: ratio, source: .Timeline)
     }
 }

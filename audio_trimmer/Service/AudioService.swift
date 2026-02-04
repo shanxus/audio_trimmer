@@ -11,7 +11,7 @@ import Combine
 protocol AudioService {
     func play()
     func pause()
-    func seek(withRatio ratio: Double)
+    func seek(withRatio ratio: Double, source: SeekActionSource)
     
     func setupConfig(_ config: AudioConfig)
     
@@ -63,11 +63,12 @@ final class AudioServiceImpl: AudioService {
         timer = nil
     }
     
-    func seek(withRatio ratio: Double) {
+    func seek(withRatio ratio: Double, source: SeekActionSource) {
         guard let config = audioConfig else { return }
         state = state.copyWith(
             currentPlaybackTime: Double(config.totalTrackLength) * ratio,
-            playbackTimeUpdateAction: .seek
+            playbackTimeUpdateAction: .seek,
+            seekActionSource: source
         )
     }
     

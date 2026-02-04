@@ -5,9 +5,24 @@
 //  Created by Shan OvO on 2026/2/1.
 //
 
+struct ProgrammaticScrollProgress: Equatable {
+    var value: Double?
+    
+    func isValid() -> Bool {
+        if let value = value, (0...1).contains(value) {
+            return true
+        }
+        return false
+    }
+    
+    mutating func setInvalid() {
+        value = nil
+    }
+}
+
 struct TimelineViewState {
     var timelineConfig: TimelineConfig
-    var programmaticScrollProgress: Double
+    var programmaticScrollProgress: ProgrammaticScrollProgress
     
     var playbackTime: Double = 0
     var trimmedDuration: Double = 0
@@ -16,7 +31,7 @@ struct TimelineViewState {
     
     func copyWith(
         timelineConfig: TimelineConfig? = nil,
-        programmaticScrollProgress: Double? = nil,
+        programmaticScrollProgress: ProgrammaticScrollProgress? = nil,
         playbackTime: Double? = nil,
         trimmedDuration: Double? = nil
     ) -> TimelineViewState {
@@ -48,5 +63,5 @@ struct TimelineViewState {
         return (validDisplayingPlaybackTime + trimmedDuration).mmss
     }
     
-    static let `default` = TimelineViewState(timelineConfig: .default, programmaticScrollProgress: 0)
+    static let `default` = TimelineViewState(timelineConfig: .default, programmaticScrollProgress: ProgrammaticScrollProgress(value: 0))
 }
