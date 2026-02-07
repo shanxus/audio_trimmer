@@ -7,25 +7,15 @@
 import SwiftUI
 
 struct KeyTimeSelectionView: View {
-    @Binding var state: KeyTimeSelectionState
+    @Binding var infoState: KeyTimeInfoState
+    @Binding var progressState: KeyTimeProgressState
     
     var onUserSeekToProgress: onUserSeekToProgressCallback
     
     var body: some View {
         VStack {
-            Text("KeyTime Selection")
-                .foregroundStyle(Color.white)
-            Spacer()
-                .frame(height: 5)
-            Text("Selected: \(state.selectedStartTimeProgressLabelValue) -> \(state.selectedEndTimeProgressLabelValue)")
-                .foregroundStyle(Color.white)
-            Spacer()
-                .frame(height: 5)
-            Text("Current: \(state.currentPlaybackProgressLabelValue)")
-                .foregroundStyle(Color.white)
-            Spacer()
-                .frame(height: 5)
-            VideoProgressView(state: $state, onTapKeyTimeProgress: { (progress: Double) in
+            KeyTimeInfoView(state: $infoState)
+            KeyTimeProgressView(state: $progressState, onTapKeyTimeProgress: { (progress: Double) in
                 onUserSeekToProgress(progress)
             }).padding(.horizontal, 30)
         }.background(Color.darkGrey)

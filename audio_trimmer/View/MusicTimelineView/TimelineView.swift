@@ -8,13 +8,12 @@
 import SwiftUI
 
 struct TimelineView: View {
-    @Binding var state: TimelineViewState
+    @Binding var state: TimelineProgressState
     
     var onUserSeekToProgress: onUserSeekToProgressCallback
     
     @State private var scrollPosition: ScrollPosition = .init(x: 0)
     
-    @State private var isUserScrolling: Bool = false
     @State private var isProgrammaticScrolling: Bool = false
     @State private var stopTask: Task<Void, Never>?
     
@@ -23,7 +22,7 @@ struct TimelineView: View {
     var body: some View {
         GeometryReader { geo in
             let windowWidth = geo.size.width
-            let timelineViewWidth = (windowWidth * trimmedAreaWidthRatio)/state.timelineConfig.trimmedDurationRatio
+            let timelineViewWidth = (windowWidth * trimmedAreaWidthRatio)/state.trimmedDurationRatio
             let trimmedAreaWidth = windowWidth * trimmedAreaWidthRatio
             let trimmedAreaInset = windowWidth/2 - trimmedAreaWidth/2
                                     
@@ -35,7 +34,7 @@ struct TimelineView: View {
                             .fill(.green)
                             .frame(width: timelineViewWidth, height: 30)
                             .overlay {
-                                WaveformView(waveform: state.waveSamples)
+                                WaveformView(waveform: WaveSamples)
                             }
                             .clipped()
                         Color.clear.frame(width: trimmedAreaInset)
@@ -56,14 +55,22 @@ struct TimelineView: View {
                     .allowsHitTesting(false)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            .onChange(of: state.programmaticScrollProgress) { _, newValue in
-                print("onChange of programmaticScrollProgress, isUserScrolling: \(isUserScrolling)")
+            .onChange(of: state.programmaticScrollProgress) { _, newValue in       
+                isProgrammaticScrolling = true
+                stopTask?.cancel()
                 
                 guard state.programmaticScrollProgress.isValid(), let programmaticScrollProgressValue = state.programmaticScrollProgress.value else { return }
                 
                 var newPosition = programmaticScrollProgressValue * timelineViewWidth;
                 newPosition = min(newPosition, timelineViewWidth - trimmedAreaWidth)
                 scrollPosition.scrollTo(x: newPosition)
+                
+                stopTask = Task { @MainActor in
+                    try? await Task.sleep(nanoseconds: 200_000_000)
+                    isProgrammaticScrolling = false
+                }
+                
+                // TODO: modify this.
                 state.programmaticScrollProgress.setInvalid()
             }
         }
@@ -71,6 +78,7 @@ struct TimelineView: View {
     }
     
     private func onScrollOffsetChange(_ offset: CGFloat, total: CGFloat) {
+        guard !isProgrammaticScrolling else { return }
         let progress = offset / total
         onUserSeekToProgress(progress)
     }

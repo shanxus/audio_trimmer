@@ -5,20 +5,17 @@
 //  Created by Shan OvO on 2026/2/1.
 //
 
-struct KeyTimeSelectionState {
-    var keyTimes: [Double]
+struct KeyTimeInfoState {
     var trimmedRatio: Double
     var playbackProgressRatio: Double
     
     func copyWith(
-        keyTimes: [Double]? = nil,
         trimmedRatio: Double? = nil,
-        playbackProgressRatio: Double? = nil) -> KeyTimeSelectionState {
-            return KeyTimeSelectionState(
-                keyTimes: keyTimes ?? self.keyTimes,
+        playbackProgressRatio: Double? = nil) -> KeyTimeInfoState {
+            return KeyTimeInfoState(
                 trimmedRatio: trimmedRatio ?? self.trimmedRatio,
                 playbackProgressRatio: playbackProgressRatio ?? self.playbackProgressRatio)
-    }
+        }
     
     private var validDisplayingPlaybackProgress: Double {
         let upperBound: Double = 1 - trimmedRatio
@@ -38,5 +35,28 @@ struct KeyTimeSelectionState {
         return (validDisplayingPlaybackProgress + trimmedRatio).formattedProgress
     }
     
-    static let `default` = KeyTimeSelectionState(keyTimes: [], trimmedRatio: 0, playbackProgressRatio: 0)
+    static let `default` = KeyTimeInfoState(trimmedRatio: 0, playbackProgressRatio: 0)
+}
+
+struct KeyTimeProgressState {
+    var keyTimes: [Double]
+    var trimmedRatio: Double
+    var playbackProgressRatio: Double
+    
+    func copyWith(
+        keyTimes: [Double]? = nil,
+        trimmedRatio: Double? = nil,
+        playbackProgressRatio: Double? = nil) -> KeyTimeProgressState {
+            return KeyTimeProgressState(
+                keyTimes: keyTimes ?? self.keyTimes,
+                trimmedRatio: trimmedRatio ?? self.trimmedRatio,
+                playbackProgressRatio: playbackProgressRatio ?? self.playbackProgressRatio)
+    }
+    
+    static let `default` = KeyTimeProgressState(keyTimes: [], trimmedRatio: 0, playbackProgressRatio: 0)
+}
+
+struct KeyTimeState {
+    var infoState: KeyTimeInfoState
+    var progressState: KeyTimeProgressState
 }

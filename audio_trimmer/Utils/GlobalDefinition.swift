@@ -30,6 +30,8 @@ let KeyTimeOptions: [Double] = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0
 
 let TimelineLengthRatioOptions: [Double] = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
+let WaveSamples: [Double] = Array(repeating: [0.2, 0.5, 0.9, 0.4, 0.7, 0.3, 0.8], count: 50).flatMap { $0 }
+
 enum Screen: Hashable {
     case AudioTrimmerScreen(config: AppConfig)
 }

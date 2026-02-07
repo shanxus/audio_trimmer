@@ -20,31 +20,25 @@ struct ProgrammaticScrollProgress: Equatable {
     }
 }
 
-struct TimelineViewState {
-    var timelineConfig: TimelineConfig
-    var programmaticScrollProgress: ProgrammaticScrollProgress
-    
-    var playbackTime: Double = 0
-    var trimmedDuration: Double = 0
-    
-    let waveSamples: [Double] = Array(repeating: [0.2, 0.5, 0.9, 0.4, 0.7, 0.3, 0.8], count: 50).flatMap { $0 }
+struct TimelineInfoState {
+    var trackDuration: Int
+    var playbackTime: Double
+    var trimmedDuration: Double
     
     func copyWith(
-        timelineConfig: TimelineConfig? = nil,
-        programmaticScrollProgress: ProgrammaticScrollProgress? = nil,
+        trackDuration: Int? = nil,
         playbackTime: Double? = nil,
         trimmedDuration: Double? = nil
-    ) -> TimelineViewState {
-        return TimelineViewState(
-            timelineConfig: timelineConfig ?? self.timelineConfig,
-            programmaticScrollProgress: programmaticScrollProgress ?? self.programmaticScrollProgress,
+    ) -> TimelineInfoState {
+        return TimelineInfoState(
+            trackDuration: trackDuration ?? self.trackDuration,
             playbackTime: playbackTime ?? self.playbackTime,
             trimmedDuration: trimmedDuration ?? self.trimmedDuration
         )
     }
     
     private var validDisplayingPlaybackTime: Double {
-        let upperBound = Double(timelineConfig.trackDuration) - trimmedDuration
+        let upperBound = Double(trackDuration) - trimmedDuration
         let lowerBound: Double = 0
         
         let clampedValue = min(max(playbackTime, lowerBound), upperBound)
@@ -63,5 +57,25 @@ struct TimelineViewState {
         return (validDisplayingPlaybackTime + trimmedDuration).mmss
     }
     
-    static let `default` = TimelineViewState(timelineConfig: .default, programmaticScrollProgress: ProgrammaticScrollProgress(value: 0))
+    static let `default` = TimelineInfoState(trackDuration: 0, playbackTime: 0, trimmedDuration: 0)
+}
+
+struct TimelineProgressState {
+    var trimmedDuration: Double
+    var trimmedDurationRatio: Double
+    var programmaticScrollProgress: ProgrammaticScrollProgress
+    
+    func copyWith(
+        trimmedDuration: Double? = nil,
+        trimmedDurationRatio: Double? = nil,
+        programmaticScrollProgress: ProgrammaticScrollProgress? = nil
+    ) -> TimelineProgressState {
+        return TimelineProgressState(
+            trimmedDuration: trimmedDuration ?? self.trimmedDuration,
+            trimmedDurationRatio: trimmedDurationRatio ?? self.trimmedDurationRatio,
+            programmaticScrollProgress: programmaticScrollProgress ?? self.programmaticScrollProgress
+        )
+    }
+    
+    static let `default` = TimelineProgressState(trimmedDuration: 0, trimmedDurationRatio: 0, programmaticScrollProgress: ProgrammaticScrollProgress(value: 0))
 }

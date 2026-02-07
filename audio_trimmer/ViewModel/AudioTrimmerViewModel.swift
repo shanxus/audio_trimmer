@@ -19,8 +19,11 @@ class AudioTrimmerViewModel: ObservableObject {
     
     func onTimelineScroll(toRatio ratio: Double) {}
     
-    @Published var keyTimeSelectionState: KeyTimeSelectionState = .default
-    @Published var timelineViewState: TimelineViewState = .default
+    @Published var keytimeInfoState: KeyTimeInfoState = .default
+    @Published var keytimeProgressState: KeyTimeProgressState = .default
+    
+    @Published var timelineInfoState: TimelineInfoState = .default
+    @Published var timelineProgressState: TimelineProgressState = .default
 }
 
 final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
@@ -32,30 +35,30 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
         self.audioService = audioService
         audioService.setupConfig(AudioConfig(totalTrackLength: appConfig.trackLenght))
         self.appConfig = appConfig
-        super.init()
+        super.init()    
         
-        let timelineConfig = TimelineConfig(trimmedDurationRatio: appConfig.trimmedRangeRatio, trackDuration: appConfig.trackLenght)
-        timelineViewState = TimelineViewState(timelineConfig: timelineConfig, programmaticScrollProgress: ProgrammaticScrollProgress(value: 0), trimmedDuration: appConfig.trimmedDuration)
+        keytimeInfoState = KeyTimeInfoState(trimmedRatio: appConfig.trimmedRangeRatio, playbackProgressRatio: 0)
+        keytimeProgressState = KeyTimeProgressState(keyTimes: appConfig.keyTimes, trimmedRatio: appConfig.trimmedRangeRatio, playbackProgressRatio: 0)
         
-        keyTimeSelectionState = KeyTimeSelectionState(keyTimes: appConfig.keyTimes, trimmedRatio: appConfig.trimmedRangeRatio, playbackProgressRatio: 0)
+        timelineInfoState = TimelineInfoState(trackDuration: appConfig.trackLenght, playbackTime: 0, trimmedDuration: appConfig.trimmedDuration)
+        timelineProgressState = TimelineProgressState(trimmedDuration: appConfig.trimmedDuration, trimmedDurationRatio: appConfig.trimmedRangeRatio, programmaticScrollProgress: ProgrammaticScrollProgress(value: 0))
         
         audioService.statePublisher.sink { [weak self] state in
-            print("[AudioTrimmerViewModelImpl] Received new state, isPlaying: \(state.isPlaying), currentPlaybackTime: \(state.currentPlaybackTime)")
+//            print("[AudioTrimmerViewModelImpl] Received new state, isPlaying: \(state.isPlaying), currentPlaybackTime: \(state.currentPlaybackTime)")
         
             guard let weakSelf = self else { return }
             let progress = state.currentPlaybackTime / Double(appConfig.trackLenght)
             
             if state.playbackTimeUpdateAction == .seek {
                 if state.seekActionSource == .KeyTimeSelection {
-                    weakSelf.timelineViewState = weakSelf.timelineViewState.copyWith(
-                        programmaticScrollProgress: ProgrammaticScrollProgress(value: progress),
-                        playbackTime: state.currentPlaybackTime
-                    )
+                    weakSelf.timelineProgressState = weakSelf.timelineProgressState.copyWith(programmaticScrollProgress: ProgrammaticScrollProgress(value: progress))
+                    
                 } else if state.seekActionSource == .Timeline {
-                    weakSelf.keyTimeSelectionState = weakSelf.keyTimeSelectionState.copyWith(
-                        playbackProgressRatio: progress
-                    )
+                    weakSelf.keytimeProgressState = weakSelf.keytimeProgressState.copyWith(playbackProgressRatio: progress)
                 }
+                
+                weakSelf.keytimeInfoState = weakSelf.keytimeInfoState.copyWith(playbackProgressRatio: progress)
+                weakSelf.timelineInfoState = weakSelf.timelineInfoState.copyWith(playbackTime: state.currentPlaybackTime)
             }
             
         }.store(in: &cancellables)
@@ -81,5 +84,5 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
     override
     func onTimelineScroll(toRatio ratio: Double) {        
         audioService.seek(withRatio: ratio, source: .Timeline)
-    }
+    }    
 }

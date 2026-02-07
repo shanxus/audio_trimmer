@@ -24,12 +24,12 @@ struct AudioTrimmerScreen: View {
                 vm.pause()
             }
             
-            KeyTimeSelectionView(state: $vm.keyTimeSelectionState) { progress in
+            KeyTimeSelectionView(infoState: $vm.keytimeInfoState, progressState: $vm.keytimeProgressState) { progress in
                 vm.seek(toProgressRatio: progress)
             }
             .frame(height: 150)
                         
-            MusicTimelineView(state: $vm.timelineViewState, onUserSeekToProgress: { (progress: Double) in                                
+            MusicTimelineView(infoState: $vm.timelineInfoState, progressState: $vm.timelineProgressState, onUserSeekToProgress: { (progress: Double) in
                 vm.onTimelineScroll(toRatio: progress)
             })
             .frame(height: 150)

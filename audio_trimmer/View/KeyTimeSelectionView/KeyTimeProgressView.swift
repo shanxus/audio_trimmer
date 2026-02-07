@@ -1,5 +1,5 @@
 //
-//  VideoProgressView.swift
+//  KeyTimeProgressView.swift
 //  audio_trimmer
 //
 //  Created by Shan OvO on 2026/1/27.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct VideoProgressView: View {
-    @Binding var state: KeyTimeSelectionState
+struct KeyTimeProgressView: View {
+    @Binding var state: KeyTimeProgressState
     let height: CGFloat = 24
     let onTapKeyTimeProgress: (Double) -> Void
     

@@ -7,27 +7,16 @@
 
 import SwiftUI
 
-struct MusicTimelineView: View {
-    
-    @Binding var state: TimelineViewState
+struct MusicTimelineView: View {    
+    @Binding var infoState: TimelineInfoState
+    @Binding var progressState: TimelineProgressState
     
     var onUserSeekToProgress: onUserSeekToProgressCallback
     
     var body: some View {
         VStack(spacing: 0) {
-            Text("Music Timeline")
-                .foregroundStyle(Color.white)
-            Spacer()
-                .frame(height: 5)
-            Text("Selected: \(state.selectedStartTimeLabelValue) -> \(state.selectedEndTimeLabelValue)")
-                .foregroundStyle(Color.white)
-            Spacer()
-                .frame(height: 5)
-            Text("Current: \(state.currentPlaybackTimeLabelValue)")
-                .foregroundStyle(Color.white)
-            Spacer()
-                .frame(height: 5)
-            TimelineView(state: $state, onUserSeekToProgress: onUserSeekToProgress)
+            TimelineInfoView(state: $infoState)
+            TimelineView(state: $progressState, onUserSeekToProgress: onUserSeekToProgress)
                 .frame(maxHeight: .infinity)
         }.background(Color.darkGrey)
     }
