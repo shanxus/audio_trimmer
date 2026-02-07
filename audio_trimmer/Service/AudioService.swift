@@ -31,6 +31,9 @@ final class AudioServiceImpl: AudioService {
         return $state.eraseToAnyPublisher()
     }
     
+    var playbackRangeStartTime: Double?
+    var playbackRangeEndTime: Double?
+    
     func play() {
         guard let config = audioConfig else { return }
         
@@ -45,9 +48,17 @@ final class AudioServiceImpl: AudioService {
             var newPlaybackTime = weakSelf.state.currentPlaybackTime + interval
             let trackLength = Double(config.totalTrackLength)
             
-            let playToEnd = newPlaybackTime >= trackLength
-            newPlaybackTime = playToEnd ? trackLength : newPlaybackTime
-            weakSelf.state = weakSelf.state.copyWith(currentPlaybackTime: newPlaybackTime, playbackTimeUpdateAction: .playback)
+            let endTime = min(trackLength, (weakSelf.playbackRangeEndTime ?? trackLength))
+            
+            let playToEnd = newPlaybackTime >= endTime
+            newPlaybackTime = playToEnd ? endTime : newPlaybackTime
+            
+            var playbackProgressInRange: Double = 0
+            if let rangeStartTime = weakSelf.playbackRangeStartTime, let rangeEndTime = weakSelf.playbackRangeEndTime {
+                playbackProgressInRange = ((newPlaybackTime - rangeStartTime) / (rangeEndTime - rangeStartTime)).clamped()
+            }
+            
+            weakSelf.state = weakSelf.state.copyWith(currentPlaybackTime: newPlaybackTime, playbackProgressInRange: playbackProgressInRange, playbackTimeUpdateAction: .playback)
             
             if playToEnd {
                 weakSelf.pause()
@@ -65,14 +76,22 @@ final class AudioServiceImpl: AudioService {
     
     func seek(withRatio ratio: Double, source: SeekActionSource) {
         guard let config = audioConfig else { return }
+        
+        let newPlaybackTime = Double(config.totalTrackLength) * ratio
+        playbackRangeStartTime = newPlaybackTime
+        playbackRangeEndTime = newPlaybackTime + config.playRangeDuration
+        
         state = state.copyWith(
-            currentPlaybackTime: Double(config.totalTrackLength) * ratio,
+            currentPlaybackTime: newPlaybackTime,            
+            playbackProgressInRange: 0,
             playbackTimeUpdateAction: .seek,
-            seekActionSource: source
+            seekActionSource: source,
         )
     }
     
     func setupConfig(_ config: AudioConfig) {
         audioConfig = config
+        playbackRangeStartTime = 0
+        playbackRangeEndTime = config.playRangeDuration
     }
 }

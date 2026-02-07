@@ -53,9 +53,15 @@ struct TimelineView: View {
                     .foregroundStyle(.white.opacity(0.7))
                     .frame(width: trimmedAreaWidth, height: 50, alignment: .center)
                     .allowsHitTesting(false)
+                    .overlay(alignment: .leading) {
+                        Rectangle()
+                            .fill(.orange.opacity(0.5))
+                            .frame(width: trimmedAreaWidth * state.playbackProgressInRange, height: 50)
+                            .animation(.linear(duration: 1.0/30.0), value: state.playbackProgressInRange)
+                    }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            .onChange(of: state.programmaticScrollProgress) { _, newValue in       
+            .onChange(of: state.programmaticScrollProgress) { _, newValue in
                 isProgrammaticScrolling = true
                 stopTask?.cancel()
                 

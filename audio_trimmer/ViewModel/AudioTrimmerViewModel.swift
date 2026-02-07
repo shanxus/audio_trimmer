@@ -33,15 +33,12 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
     
     init(audioService: AudioService, appConfig: AppConfig) {
         self.audioService = audioService
-        audioService.setupConfig(AudioConfig(totalTrackLength: appConfig.trackLenght))
+        let audioConfig = AudioConfig(totalTrackLength: appConfig.trackLenght, playRangeDurationRatio: appConfig.trimmedRangeRatio)
+        audioService.setupConfig(audioConfig)
         self.appConfig = appConfig
-        super.init()    
+        super.init()
         
-        keytimeInfoState = KeyTimeInfoState(trimmedRatio: appConfig.trimmedRangeRatio, playbackProgressRatio: 0)
-        keytimeProgressState = KeyTimeProgressState(keyTimes: appConfig.keyTimes, trimmedRatio: appConfig.trimmedRangeRatio, playbackProgressRatio: 0)
-        
-        timelineInfoState = TimelineInfoState(trackDuration: appConfig.trackLenght, playbackTime: 0, trimmedDuration: appConfig.trimmedDuration)
-        timelineProgressState = TimelineProgressState(trimmedDuration: appConfig.trimmedDuration, trimmedDurationRatio: appConfig.trimmedRangeRatio, programmaticScrollProgress: ProgrammaticScrollProgress(value: 0))
+        initState()
         
         audioService.statePublisher.sink { [weak self] state in
 //            print("[AudioTrimmerViewModelImpl] Received new state, isPlaying: \(state.isPlaying), currentPlaybackTime: \(state.currentPlaybackTime)")
@@ -49,18 +46,14 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
             guard let weakSelf = self else { return }
             let progress = state.currentPlaybackTime / Double(appConfig.trackLenght)
             
-            if state.playbackTimeUpdateAction == .seek {
-                if state.seekActionSource == .KeyTimeSelection {
-                    weakSelf.timelineProgressState = weakSelf.timelineProgressState.copyWith(programmaticScrollProgress: ProgrammaticScrollProgress(value: progress))
-                    
-                } else if state.seekActionSource == .Timeline {
-                    weakSelf.keytimeProgressState = weakSelf.keytimeProgressState.copyWith(playbackProgressRatio: progress)
-                }
-                
-                weakSelf.keytimeInfoState = weakSelf.keytimeInfoState.copyWith(playbackProgressRatio: progress)
-                weakSelf.timelineInfoState = weakSelf.timelineInfoState.copyWith(playbackTime: state.currentPlaybackTime)
+            switch state.playbackTimeUpdateAction {
+            case .seek:
+                weakSelf.onAudioStateUpdateWithSeek(audioState: state)
+            case .playback:
+                weakSelf.onAudioStateUpdateWithPlayback(audioState: state)
+            case .none:
+                break
             }
-            
         }.store(in: &cancellables)
     }
     
@@ -84,5 +77,36 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
     override
     func onTimelineScroll(toRatio ratio: Double) {        
         audioService.seek(withRatio: ratio, source: .Timeline)
-    }    
+    }
+    
+    private func initState() {
+        keytimeInfoState = KeyTimeInfoState(trimmedRatio: appConfig.trimmedRangeRatio, playbackProgressRatio: 0)
+        keytimeProgressState = KeyTimeProgressState(keyTimes: appConfig.keyTimes, trimmedRatio: appConfig.trimmedRangeRatio, playbackProgressRatio: 0)
+        
+        timelineInfoState = TimelineInfoState(trackDuration: appConfig.trackLenght, playbackTime: 0, trimmedDuration: appConfig.trimmedDuration)
+        timelineProgressState = TimelineProgressState(trimmedDuration: appConfig.trimmedDuration, trimmedDurationRatio: appConfig.trimmedRangeRatio, programmaticScrollProgress: ProgrammaticScrollProgress(value: 0), playbackProgressInRange: 0)
+    }
+    
+    private func onAudioStateUpdateWithSeek(audioState: AudioServiceState) {
+        let progress = audioState.currentPlaybackTime / Double(appConfig.trackLenght)
+        
+        if audioState.seekActionSource == .KeyTimeSelection {
+            timelineProgressState = timelineProgressState.copyWith(programmaticScrollProgress: ProgrammaticScrollProgress(value: progress), playbackProgressInRange: 0)
+        } else if audioState.seekActionSource == .Timeline {
+            keytimeProgressState = keytimeProgressState.copyWith(playbackProgressRatio: progress)
+            timelineProgressState = timelineProgressState.copyWith(playbackProgressInRange: 0)
+        }
+        
+        keytimeInfoState = keytimeInfoState.copyWith(playbackProgressRatio: progress)
+        timelineInfoState = timelineInfoState.copyWith(playbackTime: audioState.currentPlaybackTime)
+    }
+    
+    private func onAudioStateUpdateWithPlayback(audioState: AudioServiceState) {
+        let progress = audioState.currentPlaybackTime / Double(appConfig.trackLenght)
+        
+        keytimeInfoState = keytimeInfoState.copyWith(playbackProgressRatio: progress)
+        timelineInfoState = timelineInfoState.copyWith(playbackTime: audioState.currentPlaybackTime)
+        
+        timelineProgressState = timelineProgressState.copyWith(playbackProgressInRange: audioState.playbackProgressInRange)
+    }
 }

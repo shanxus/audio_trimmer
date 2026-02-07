@@ -64,18 +64,21 @@ struct TimelineProgressState {
     var trimmedDuration: Double
     var trimmedDurationRatio: Double
     var programmaticScrollProgress: ProgrammaticScrollProgress
+    var playbackProgressInRange: Double
     
     func copyWith(
         trimmedDuration: Double? = nil,
         trimmedDurationRatio: Double? = nil,
-        programmaticScrollProgress: ProgrammaticScrollProgress? = nil
+        programmaticScrollProgress: ProgrammaticScrollProgress? = nil,
+        playbackProgressInRange: Double?
     ) -> TimelineProgressState {
         return TimelineProgressState(
             trimmedDuration: trimmedDuration ?? self.trimmedDuration,
             trimmedDurationRatio: trimmedDurationRatio ?? self.trimmedDurationRatio,
-            programmaticScrollProgress: programmaticScrollProgress ?? self.programmaticScrollProgress
+            programmaticScrollProgress: programmaticScrollProgress ?? self.programmaticScrollProgress,
+            playbackProgressInRange: playbackProgressInRange ?? self.playbackProgressInRange
         )
     }
     
-    static let `default` = TimelineProgressState(trimmedDuration: 0, trimmedDurationRatio: 0, programmaticScrollProgress: ProgrammaticScrollProgress(value: 0))
+    static let `default` = TimelineProgressState(trimmedDuration: 0, trimmedDurationRatio: 0, programmaticScrollProgress: ProgrammaticScrollProgress(value: 0), playbackProgressInRange: 0)
 }

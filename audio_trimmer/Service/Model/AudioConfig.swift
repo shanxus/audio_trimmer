@@ -7,4 +7,9 @@
 
 struct AudioConfig {
     let totalTrackLength: Int
+    let playRangeDurationRatio: Double
+    
+    var playRangeDuration: Double {
+        Double(totalTrackLength) * playRangeDurationRatio
+    }
 }
