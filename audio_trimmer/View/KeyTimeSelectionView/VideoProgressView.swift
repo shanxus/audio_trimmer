@@ -38,6 +38,7 @@ struct VideoProgressView: View {
                             .fill(.orange)
                             .frame(width: geo.size.width * state.trimmedRatio, height: height)
                             .clipShape(RoundedRectangle(cornerRadius: height/2))
+                            .allowsHitTesting(false)
                             .offset(x: indicatorStartRatio * geo.size.width)
                     }
                     .clipShape(RoundedRectangle(cornerRadius: height/2))
