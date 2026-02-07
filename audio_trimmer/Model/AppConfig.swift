@@ -5,7 +5,7 @@
 //  Created by Shan OvO on 2026/2/1.
 //
 
-struct AppConfig {
+struct AppConfig: Hashable {
     var trackLenght: Int
     var keyTimes: [Double]
     var trimmedRangeRatio: Double

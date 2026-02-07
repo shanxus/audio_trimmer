@@ -7,8 +7,12 @@
 
 import SwiftUI
 
-struct AudioTrimmerScreen: View {
-    @ObservedObject var vm: AudioTrimmerViewModel = AudioTrimmerViewModelImpl(audioService: AudioServiceImpl(), appConfig: .default)
+struct AudioTrimmerScreen: View {    
+    @StateObject private var vm: AudioTrimmerViewModel
+    
+    init(audioService: AudioService, appConfig: AppConfig) {
+        _vm = StateObject(wrappedValue: AudioTrimmerViewModelImpl(audioService: audioService, appConfig: appConfig))
+    }
     
     var body: some View {
         VStack {

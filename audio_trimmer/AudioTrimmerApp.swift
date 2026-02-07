@@ -11,7 +11,25 @@ import SwiftUI
 struct AudioTrimmerApp: App {
     var body: some Scene {
         WindowGroup {
-            AudioTrimmerScreen()
+            RootView()
+        }
+    }
+}
+
+struct RootView: View {
+    @State private var path: [Screen] = []
+    
+    var body: some View {
+        NavigationStack(path: $path) {
+            SettingsScreen { appConfig in
+                path.append(.AudioTrimmerScreen(config: appConfig))
+            }
+            .navigationDestination(for: Screen.self) { screen in
+                switch screen {
+                case .AudioTrimmerScreen(let appConfig):
+                    AudioTrimmerScreen(audioService: AudioServiceImpl(), appConfig: appConfig)
+                }
+            }
         }
     }
 }
