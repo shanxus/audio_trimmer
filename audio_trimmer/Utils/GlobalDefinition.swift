@@ -20,6 +20,11 @@ extension Double {
     var formattedProgress: String {
         return self.formatted(.percent.precision(.fractionLength(1)))        
     }
+    
+    func clamped() -> Double {
+        guard isFinite else { return 0 }
+        return min(max(self, 0), 1)
+    }
 }
 
 typealias onUserSeekToProgressCallback = (_ progress: Double) -> Void

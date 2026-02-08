@@ -21,43 +21,35 @@ struct ProgrammaticScrollProgress: Equatable {
 }
 
 struct TimelineInfoState {
-    var trackDuration: Int
     var playbackTime: Double
-    var trimmedDuration: Double
+    var rangeStartTime: Double
+    var rangeEndTime: Double
     
     func copyWith(
-        trackDuration: Int? = nil,
         playbackTime: Double? = nil,
-        trimmedDuration: Double? = nil
+        rangeStartTime: Double? = nil,
+        rangeEndTime: Double? = nil
     ) -> TimelineInfoState {
         return TimelineInfoState(
-            trackDuration: trackDuration ?? self.trackDuration,
             playbackTime: playbackTime ?? self.playbackTime,
-            trimmedDuration: trimmedDuration ?? self.trimmedDuration
+            rangeStartTime: rangeStartTime ?? self.rangeStartTime,
+            rangeEndTime: rangeEndTime ?? self.rangeEndTime
         )
     }
     
-    private var validDisplayingPlaybackTime: Double {
-        let upperBound = Double(trackDuration) - trimmedDuration
-        let lowerBound: Double = 0
-        
-        let clampedValue = min(max(playbackTime, lowerBound), upperBound)
-        return clampedValue
-    }
-    
     var currentPlaybackTimeLabelValue: String {
-        return validDisplayingPlaybackTime.mmss
+        return playbackTime.mmss
     }
     
     var selectedStartTimeLabelValue: String {
-        return validDisplayingPlaybackTime.mmss
+        return rangeStartTime.mmss
     }
     
     var selectedEndTimeLabelValue: String {
-        return (validDisplayingPlaybackTime + trimmedDuration).mmss
+        return rangeEndTime.mmss
     }
     
-    static let `default` = TimelineInfoState(trackDuration: 0, playbackTime: 0, trimmedDuration: 0)
+    static let `default` = TimelineInfoState(playbackTime: 0, rangeStartTime: 0, rangeEndTime: 0)
 }
 
 struct TimelineProgressState {

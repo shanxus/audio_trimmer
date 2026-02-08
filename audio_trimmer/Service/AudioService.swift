@@ -58,7 +58,7 @@ final class AudioServiceImpl: AudioService {
                 playbackProgressInRange = ((newPlaybackTime - rangeStartTime) / (rangeEndTime - rangeStartTime)).clamped()
             }
             
-            weakSelf.state = weakSelf.state.copyWith(currentPlaybackTime: newPlaybackTime, playbackProgressInRange: playbackProgressInRange, playbackTimeUpdateAction: .playback)
+            weakSelf.state = weakSelf.state.copyWith(currentPlaybackTime: newPlaybackTime, playbackProgressInRange: playbackProgressInRange, updateAction: .playback)
             
             if playToEnd {
                 weakSelf.pause()
@@ -81,10 +81,13 @@ final class AudioServiceImpl: AudioService {
         playbackRangeStartTime = newPlaybackTime
         playbackRangeEndTime = newPlaybackTime + config.playRangeDuration
         
+        let playbackRange = PlaybackRange.from(startTime: playbackRangeStartTime, endTime: playbackRangeEndTime)
+        
         state = state.copyWith(
             currentPlaybackTime: newPlaybackTime,            
             playbackProgressInRange: 0,
-            playbackTimeUpdateAction: .seek,
+            playbackRange: playbackRange,
+            updateAction: .seek,
             seekActionSource: source,
         )
     }
@@ -93,5 +96,12 @@ final class AudioServiceImpl: AudioService {
         audioConfig = config
         playbackRangeStartTime = 0
         playbackRangeEndTime = config.playRangeDuration
+        
+        let playbackRange = PlaybackRange.from(startTime: playbackRangeStartTime, endTime: playbackRangeEndTime)
+        state = state.copyWith(
+            playbackEndTime: Double(config.totalTrackLength),
+            playbackRange: playbackRange,
+            updateAction: .setup
+        )
     }
 }

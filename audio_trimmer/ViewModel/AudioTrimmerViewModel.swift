@@ -33,20 +33,14 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
     
     init(audioService: AudioService, appConfig: AppConfig) {
         self.audioService = audioService
-        let audioConfig = AudioConfig(totalTrackLength: appConfig.trackLenght, playRangeDurationRatio: appConfig.trimmedRangeRatio)
-        audioService.setupConfig(audioConfig)
         self.appConfig = appConfig
         super.init()
         
-        initState()
-        
         audioService.statePublisher.sink { [weak self] state in
-//            print("[AudioTrimmerViewModelImpl] Received new state, isPlaying: \(state.isPlaying), currentPlaybackTime: \(state.currentPlaybackTime)")
-        
             guard let weakSelf = self else { return }
-            let progress = state.currentPlaybackTime / Double(appConfig.trackLenght)
-            
-            switch state.playbackTimeUpdateAction {
+            switch state.updateAction {
+            case .setup:
+                weakSelf.onAudioStateUpdateWithSetup(audioState: state)
             case .seek:
                 weakSelf.onAudioStateUpdateWithSeek(audioState: state)
             case .playback:
@@ -55,6 +49,9 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
                 break
             }
         }.store(in: &cancellables)
+        
+        let audioConfig = AudioConfig(totalTrackLength: appConfig.trackLenght, playRangeDurationRatio: appConfig.trimmedRangeRatio)
+        audioService.setupConfig(audioConfig)
     }
     
     override
@@ -75,16 +72,8 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
     }
     
     override
-    func onTimelineScroll(toRatio ratio: Double) {        
+    func onTimelineScroll(toRatio ratio: Double) {
         audioService.seek(withRatio: ratio, source: .Timeline)
-    }
-    
-    private func initState() {
-        keytimeInfoState = KeyTimeInfoState(trimmedRatio: appConfig.trimmedRangeRatio, playbackProgressRatio: 0)
-        keytimeProgressState = KeyTimeProgressState(keyTimes: appConfig.keyTimes, trimmedRatio: appConfig.trimmedRangeRatio, playbackProgressRatio: 0)
-        
-        timelineInfoState = TimelineInfoState(trackDuration: appConfig.trackLenght, playbackTime: 0, trimmedDuration: appConfig.trimmedDuration)
-        timelineProgressState = TimelineProgressState(trimmedDuration: appConfig.trimmedDuration, trimmedDurationRatio: appConfig.trimmedRangeRatio, programmaticScrollProgress: ProgrammaticScrollProgress(value: 0), playbackProgressInRange: 0)
     }
     
     private func onAudioStateUpdateWithSeek(audioState: AudioServiceState) {
@@ -97,8 +86,8 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
             timelineProgressState = timelineProgressState.copyWith(playbackProgressInRange: 0)
         }
         
-        keytimeInfoState = keytimeInfoState.copyWith(playbackProgressRatio: progress)
-        timelineInfoState = timelineInfoState.copyWith(playbackTime: audioState.currentPlaybackTime)
+        keytimeInfoState = keytimeInfoState.copyWith(playbackProgressRatio: progress, rangeStartRatio: audioState.rangeStartRatio, rangeEndRatio: audioState.rangeEndRatio)
+        timelineInfoState = timelineInfoState.copyWith(playbackTime: audioState.currentPlaybackTime, rangeStartTime: audioState.playbackRange.startTime, rangeEndTime: audioState.playbackRange.endTime)
     }
     
     private func onAudioStateUpdateWithPlayback(audioState: AudioServiceState) {
@@ -108,5 +97,19 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
         timelineInfoState = timelineInfoState.copyWith(playbackTime: audioState.currentPlaybackTime)
         
         timelineProgressState = timelineProgressState.copyWith(playbackProgressInRange: audioState.playbackProgressInRange)
+    }
+    
+    private func onAudioStateUpdateWithSetup(audioState: AudioServiceState) {
+        keytimeInfoState = KeyTimeInfoState(
+            playbackProgressRatio: audioState.currentPlaybackProgress,
+            rangeStartRatio: audioState.rangeStartRatio,
+            rangeEndRatio: audioState.rangeEndRatio
+        )
+        
+        keytimeProgressState = KeyTimeProgressState(keyTimes: appConfig.keyTimes, trimmedRatio: appConfig.trimmedRangeRatio, playbackProgressRatio: audioState.currentPlaybackProgress)
+        
+        timelineInfoState = TimelineInfoState(playbackTime: audioState.currentPlaybackTime, rangeStartTime: audioState.playbackRange.startTime, rangeEndTime: audioState.playbackRange.endTime)
+        
+        timelineProgressState = TimelineProgressState(trimmedDuration: appConfig.trimmedDuration, trimmedDurationRatio: appConfig.trimmedRangeRatio, programmaticScrollProgress: ProgrammaticScrollProgress(value: audioState.currentPlaybackProgress), playbackProgressInRange: audioState.playbackProgressInRange)
     }
 }

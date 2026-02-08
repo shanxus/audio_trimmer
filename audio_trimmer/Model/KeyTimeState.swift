@@ -6,36 +6,35 @@
 //
 
 struct KeyTimeInfoState {
-    var trimmedRatio: Double
     var playbackProgressRatio: Double
+    var rangeStartRatio: Double
+    var rangeEndRatio: Double
     
     func copyWith(
-        trimmedRatio: Double? = nil,
-        playbackProgressRatio: Double? = nil) -> KeyTimeInfoState {
+        playbackProgressRatio: Double? = nil,
+        rangeStartRatio: Double? = nil,
+        rangeEndRatio: Double? = nil
+    ) -> KeyTimeInfoState {
             return KeyTimeInfoState(
-                trimmedRatio: trimmedRatio ?? self.trimmedRatio,
-                playbackProgressRatio: playbackProgressRatio ?? self.playbackProgressRatio)
+                playbackProgressRatio: playbackProgressRatio ?? self.playbackProgressRatio,
+                rangeStartRatio: rangeStartRatio ?? self.rangeStartRatio,
+                rangeEndRatio: rangeEndRatio ?? self.rangeEndRatio
+            )
         }
     
-    private var validDisplayingPlaybackProgress: Double {
-        let upperBound: Double = 1 - trimmedRatio
-        let lowerBound: Double = 0
-        return min(max(playbackProgressRatio, lowerBound), upperBound)
-    }
-    
     var currentPlaybackProgressLabelValue: String {
-        return validDisplayingPlaybackProgress.formattedProgress
+        return playbackProgressRatio.formattedProgress
     }
     
     var selectedStartTimeProgressLabelValue: String {
-        return validDisplayingPlaybackProgress.formattedProgress
+        return rangeStartRatio.formattedProgress
     }
     
     var selectedEndTimeProgressLabelValue: String {
-        return (validDisplayingPlaybackProgress + trimmedRatio).formattedProgress
+        return rangeEndRatio.formattedProgress
     }
     
-    static let `default` = KeyTimeInfoState(trimmedRatio: 0, playbackProgressRatio: 0)
+    static let `default` = KeyTimeInfoState(playbackProgressRatio: 0, rangeStartRatio: 0, rangeEndRatio: 0)
 }
 
 struct KeyTimeProgressState {
