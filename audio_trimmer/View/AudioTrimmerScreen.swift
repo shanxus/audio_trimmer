@@ -24,6 +24,10 @@ struct AudioTrimmerScreen: View {
                 vm.pause()
             }
             
+            Button("reset") {
+                vm.reset()
+            }
+            
             KeyTimeSelectionView(infoState: $vm.keyTimeInfoState, progressState: $vm.keyTimeProgressState) { progress in
                 vm.seek(toProgressRatio: progress)
             }

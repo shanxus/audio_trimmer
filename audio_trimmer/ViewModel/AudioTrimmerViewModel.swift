@@ -15,6 +15,7 @@ enum SeekActionSource {
 class AudioTrimmerViewModel: ObservableObject {
     func play() {}
     func pause() {}
+    func reset() {}
     func seek(toProgressRatio ratio: Double) {}
     
     func onTimelineScroll(toRatio ratio: Double) {}
@@ -45,6 +46,8 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
                 weakSelf.onAudioStateUpdateWithSeek(audioState: state)
             case .playback:
                 weakSelf.onAudioStateUpdateWithPlayback(audioState: state)
+            case .reset:
+                weakSelf.onAudioStateUpdateWithReset(audioState: state)
             case .none:
                 break
             }
@@ -62,6 +65,11 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
     override
     func pause() {
         audioService.pause()
+    }
+    
+    override
+    func reset() {
+        audioService.reset()
     }
     
     override
@@ -111,5 +119,13 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
         timelineInfoState = TimelineInfoState(playbackTime: audioState.currentPlaybackTime, rangeStartTime: audioState.playbackRange.startTime, rangeEndTime: audioState.playbackRange.endTime)
         
         timelineProgressState = TimelineProgressState(trimmedDuration: appConfig.trimmedDuration, trimmedDurationRatio: appConfig.trimmedRangeRatio, programmaticScrollProgress: ProgrammaticScrollProgress(value: audioState.currentPlaybackProgress), playbackProgressInRange: audioState.playbackProgressInRange)
+    }
+    
+    private func onAudioStateUpdateWithReset(audioState: AudioServiceState) {
+        timelineProgressState = timelineProgressState.copyWith(playbackProgressInRange: 0)
+        
+        let progress = audioState.currentPlaybackTime / Double(appConfig.trackLenght)
+        keyTimeInfoState = keyTimeInfoState.copyWith(playbackProgressRatio: progress)
+        timelineInfoState = timelineInfoState.copyWith(playbackTime: audioState.currentPlaybackTime)
     }
 }

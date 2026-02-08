@@ -9,6 +9,7 @@ enum AudioServiceStateUpdateAction {
     case setup
     case playback
     case seek
+    case reset
 }
 
 struct PlaybackRange: Equatable {

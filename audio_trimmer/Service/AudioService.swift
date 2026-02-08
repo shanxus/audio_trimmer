@@ -11,6 +11,7 @@ import Combine
 protocol AudioService {
     func play()
     func pause()
+    func reset()
     func seek(withRatio ratio: Double, source: SeekActionSource)
     
     func setupConfig(_ config: AudioConfig)
@@ -72,6 +73,16 @@ final class AudioServiceImpl: AudioService {
         state.isPlaying = false;
         timer?.invalidate()
         timer = nil
+    }
+    
+    func reset() {
+        if let rangeStartTime = playbackRangeStartTime {
+            state = state.copyWith(
+                currentPlaybackTime: rangeStartTime,
+                playbackProgressInRange: 0,
+                updateAction: .reset
+            )
+        }
     }
     
     func seek(withRatio ratio: Double, source: SeekActionSource) {
