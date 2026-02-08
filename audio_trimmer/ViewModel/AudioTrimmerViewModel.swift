@@ -25,6 +25,8 @@ class AudioTrimmerViewModel: ObservableObject {
     
     @Published var timelineInfoState: TimelineInfoState = .default
     @Published var timelineProgressState: TimelineProgressState = .default
+    
+    @Published var timelinePlayPauseState: TimelinePlayPauseState = .default
 }
 
 final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
@@ -48,6 +50,8 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
                 weakSelf.onAudioStateUpdateWithPlayback(audioState: state)
             case .reset:
                 weakSelf.onAudioStateUpdateWithReset(audioState: state)
+            case .playPause:
+                weakSelf.onAudioStateUpdateWithPlayPause(audioState: state)
             case .none:
                 break
             }
@@ -127,5 +131,9 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
         let progress = audioState.currentPlaybackTime / Double(appConfig.trackLenght)
         keyTimeInfoState = keyTimeInfoState.copyWith(playbackProgressRatio: progress)
         timelineInfoState = timelineInfoState.copyWith(playbackTime: audioState.currentPlaybackTime)
+    }
+    
+    private func onAudioStateUpdateWithPlayPause(audioState: AudioServiceState) {
+        timelinePlayPauseState = timelinePlayPauseState.copyWith(isPlaying: audioState.isPlaying)
     }
 }

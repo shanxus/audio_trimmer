@@ -23,7 +23,7 @@ struct SettingsScreen: View {
                 Text("\(value)")
             }
             
-            PresetButtonRow(title: "Key Time Selection", items: KeyTimeOptions, selectedIndices: selectedKeyTimeIndexList) { index in
+            PresetButtonRow(title: "Multiple Key Time Selection", items: KeyTimeOptions, selectedIndices: selectedKeyTimeIndexList) { index in
                 
                 if selectedKeyTimeIndexList.contains(index) {
                     selectedKeyTimeIndexList.remove(index)
@@ -41,6 +41,9 @@ struct SettingsScreen: View {
                 Text(value, format: .number.precision(.fractionLength(1)))
             }
             
+            Spacer()
+                .frame(height: 40)
+            
             Button("Go to audio trimmer") {
                 let trackLength = TrackLengthOptions[selectedTrackLengthIndex]
                 let keyTimes = selectedKeyTimeIndexList.map { KeyTimeOptions[$0] }
@@ -49,6 +52,7 @@ struct SettingsScreen: View {
                 onActionButtonTap(appConfig)
             }
         }
+        .padding(.horizontal, 20)
     }
 }
 
@@ -79,6 +83,7 @@ struct PresetButtonRow<Item, Label: View>: View {
                 }
             }
         }
+        .padding(.bottom, 20)
     }
 }
 

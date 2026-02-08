@@ -15,28 +15,29 @@ struct AudioTrimmerScreen: View {
     }
     
     var body: some View {
-        VStack {
-            Button("play") {
-                vm.play()
-            }
-            
-            Button("pause") {
-                vm.pause()
-            }
-            
-            Button("reset") {
-                vm.reset()
-            }
-            
+        VStack {                        
             KeyTimeSelectionView(infoState: $vm.keyTimeInfoState, progressState: $vm.keyTimeProgressState) { progress in
                 vm.seek(toProgressRatio: progress)
             }
             .frame(height: 150)
                         
-            MusicTimelineView(infoState: $vm.timelineInfoState, progressState: $vm.timelineProgressState, onUserSeekToProgress: { (progress: Double) in
-                vm.onTimelineScroll(toRatio: progress)
-            })
-            .frame(height: 150)
+            MusicTimelineView(
+                infoState: $vm.timelineInfoState,
+                progressState: $vm.timelineProgressState,
+                playPauseState: $vm.timelinePlayPauseState,
+                onPlayButtonTap: {
+                    vm.play()
+                },
+                onPauseButtonTap: {
+                    vm.pause()
+                },
+                onResetButtonTap: {
+                    vm.reset()
+                },
+                onUserSeekToProgress: { (progress: Double) in
+                    vm.onTimelineScroll(toRatio: progress)
+                })
+            .frame(height: 400)
         }
     }
 }

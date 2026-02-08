@@ -40,7 +40,7 @@ final class AudioServiceImpl: AudioService {
         
         guard !state.isPlaying else { return }
         print("[AudioServiceImpl] play")
-        state = state.copyWith(isPlaying: true)
+        state = state.copyWith(isPlaying: true, updateAction: .playPause)
         
         let interval: TimeInterval = 1.0 / fps
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: {[weak self] _ in
@@ -70,7 +70,8 @@ final class AudioServiceImpl: AudioService {
     func pause() {                
         guard state.isPlaying else { return }
         print("[AudioServiceImpl] pause")
-        state.isPlaying = false;
+        state = state.copyWith(isPlaying: false, updateAction: .playPause)
+        
         timer?.invalidate()
         timer = nil
     }

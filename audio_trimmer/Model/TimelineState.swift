@@ -74,3 +74,18 @@ struct TimelineProgressState {
     
     static let `default` = TimelineProgressState(trimmedDuration: 0, trimmedDurationRatio: 0, programmaticScrollProgress: ProgrammaticScrollProgress(value: 0), playbackProgressInRange: 0)
 }
+
+
+struct TimelinePlayPauseState {
+    var isPlaying: Bool
+    
+    func copyWith(
+        isPlaying: Bool? = nil
+    ) -> TimelinePlayPauseState {
+        return TimelinePlayPauseState(
+            isPlaying: isPlaying ?? self.isPlaying
+        )
+    }
+    
+    static let `default` = TimelinePlayPauseState(isPlaying: false)
+}
