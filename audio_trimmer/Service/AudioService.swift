@@ -35,7 +35,7 @@ final class AudioServiceImpl: AudioService {
     var playbackRangeStartTime: Double?
     var playbackRangeEndTime: Double?
     
-    func play() {                
+    func play() {
         guard !state.isPlaying else { return }
         print("[AudioServiceImpl] play")
         state = state.copyWith(isPlaying: true, updateAction: .playPause)
@@ -117,5 +117,10 @@ final class AudioServiceImpl: AudioService {
             playbackRange: playbackRange,
             updateAction: .setup
         )
+    }
+    
+    deinit {
+        timer?.invalidate()
+        timer = nil
     }
 }

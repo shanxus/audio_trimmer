@@ -7,7 +7,7 @@
 
 import Combine
 
-enum SeekActionSource {
+enum SeekActionSource: Equatable {
     case KeyTimeSelection
     case Timeline
 }

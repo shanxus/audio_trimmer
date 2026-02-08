@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		3DA9BE412F38800400D96B9F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3DA9BD802F27B00500D96B9F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3DA9BD872F27B00500D96B9F;
+			remoteInfo = audio_trimmer;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		3DA9BD882F27B00500D96B9F /* audio_trimmer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = audio_trimmer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3DA9BE3D2F38800400D96B9F /* audio_trimmerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = audio_trimmerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,10 +27,22 @@
 			path = audio_trimmer;
 			sourceTree = "<group>";
 		};
+		3DA9BE3E2F38800400D96B9F /* audio_trimmerTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = audio_trimmerTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		3DA9BD852F27B00500D96B9F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3DA9BE3A2F38800400D96B9F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				3DA9BD8A2F27B00500D96B9F /* audio_trimmer */,
+				3DA9BE3E2F38800400D96B9F /* audio_trimmerTests */,
 				3DA9BD892F27B00500D96B9F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				3DA9BD882F27B00500D96B9F /* audio_trimmer.app */,
+				3DA9BE3D2F38800400D96B9F /* audio_trimmerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,6 +95,29 @@
 			productReference = 3DA9BD882F27B00500D96B9F /* audio_trimmer.app */;
 			productType = "com.apple.product-type.application";
 		};
+		3DA9BE3C2F38800400D96B9F /* audio_trimmerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3DA9BE432F38800400D96B9F /* Build configuration list for PBXNativeTarget "audio_trimmerTests" */;
+			buildPhases = (
+				3DA9BE392F38800400D96B9F /* Sources */,
+				3DA9BE3A2F38800400D96B9F /* Frameworks */,
+				3DA9BE3B2F38800400D96B9F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3DA9BE422F38800400D96B9F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				3DA9BE3E2F38800400D96B9F /* audio_trimmerTests */,
+			);
+			name = audio_trimmerTests;
+			packageProductDependencies = (
+			);
+			productName = audio_trimmerTests;
+			productReference = 3DA9BE3D2F38800400D96B9F /* audio_trimmerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -82,6 +130,10 @@
 				TargetAttributes = {
 					3DA9BD872F27B00500D96B9F = {
 						CreatedOnToolsVersion = 26.1.1;
+					};
+					3DA9BE3C2F38800400D96B9F = {
+						CreatedOnToolsVersion = 26.1.1;
+						TestTargetID = 3DA9BD872F27B00500D96B9F;
 					};
 				};
 			};
@@ -100,12 +152,20 @@
 			projectRoot = "";
 			targets = (
 				3DA9BD872F27B00500D96B9F /* audio_trimmer */,
+				3DA9BE3C2F38800400D96B9F /* audio_trimmerTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		3DA9BD862F27B00500D96B9F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3DA9BE3B2F38800400D96B9F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +182,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3DA9BE392F38800400D96B9F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3DA9BE422F38800400D96B9F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3DA9BD872F27B00500D96B9F /* audio_trimmer */;
+			targetProxy = 3DA9BE412F38800400D96B9F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		3DA9BD912F27B00700D96B9F /* Debug */ = {
@@ -329,6 +404,53 @@
 			};
 			name = Release;
 		};
+		3DA9BE442F38800400D96B9F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2R89L7B5LL;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.shan.audio-trimmerTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/audio_trimmer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/audio_trimmer";
+			};
+			name = Debug;
+		};
+		3DA9BE452F38800400D96B9F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2R89L7B5LL;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.shan.audio-trimmerTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/audio_trimmer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/audio_trimmer";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -346,6 +468,15 @@
 			buildConfigurations = (
 				3DA9BD942F27B00700D96B9F /* Debug */,
 				3DA9BD952F27B00700D96B9F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3DA9BE432F38800400D96B9F /* Build configuration list for PBXNativeTarget "audio_trimmerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3DA9BE442F38800400D96B9F /* Debug */,
+				3DA9BE452F38800400D96B9F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

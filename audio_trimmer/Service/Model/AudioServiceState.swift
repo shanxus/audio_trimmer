@@ -5,7 +5,7 @@
 //  Created by Shan OvO on 2026/1/29.
 //
 
-enum AudioServiceStateUpdateAction {
+enum AudioServiceStateUpdateAction: Equatable {
     case setup
     case playback
     case seek
