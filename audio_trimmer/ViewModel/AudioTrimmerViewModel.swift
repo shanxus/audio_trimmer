@@ -6,6 +6,7 @@
 //
 
 import Combine
+import Foundation
 
 enum SeekActionSource: Equatable {
     case KeyTimeSelection
@@ -39,7 +40,9 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
         self.appConfig = appConfig
         super.init()
         
-        audioService.statePublisher.sink { [weak self] state in
+        audioService.statePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
             guard let weakSelf = self else { return }
             switch state.updateAction {
             case .setup:
