@@ -64,7 +64,7 @@ struct TimelineProgressState {
         )
     }
     
-    static let `default` = TimelineProgressState(trimmedDuration: 0, trimmedDurationRatio: 0, programmaticScrollProgress: ProgrammaticScrollProgress(value: 0), playbackProgressInRange: 0)
+    static let `default` = TimelineProgressState(trimmedDuration: 0, trimmedDurationRatio: 1, programmaticScrollProgress: ProgrammaticScrollProgress(value: 0), playbackProgressInRange: 0)
 }
 
 
