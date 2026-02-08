@@ -16,8 +16,9 @@ struct KeyTimeProgressView: View {
     @State var isDragging = false
     
     var body: some View {
-        ZStack {
-            GeometryReader { geo in
+        GeometryReader { geo in
+            VStack {
+                Spacer()
                 Rectangle()
                     .foregroundStyle(.gray.opacity(0.3))
                     .frame(maxWidth: .infinity, maxHeight: height)
@@ -54,10 +55,11 @@ struct KeyTimeProgressView: View {
                             }
                         }
                     }
-            }.onChange(of: state.playbackProgressRatio) { _, newValue in
-                if isDragging { return }
-                indicatorStartRatio = getClampedIndicatorStartRatio(with: newValue)
+                Spacer()
             }
+        }.onChange(of: state.playbackProgressRatio) { _, newValue in
+            if isDragging { return }
+            indicatorStartRatio = getClampedIndicatorStartRatio(with: newValue)
         }
     }
     

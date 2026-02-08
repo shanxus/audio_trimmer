@@ -23,6 +23,6 @@ struct TimelineInfoView: View {
                 .foregroundStyle(Color.white)
             Spacer()
                 .frame(height: 5)
-        }.background(Color.darkGrey)
+        }
     }
 }

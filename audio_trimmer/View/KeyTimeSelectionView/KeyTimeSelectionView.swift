@@ -15,9 +15,15 @@ struct KeyTimeSelectionView: View {
     var body: some View {
         VStack {
             KeyTimeInfoView(state: $infoState)
+            
+            Spacer()
+                .frame(height: 20)
+            
             KeyTimeProgressView(state: $progressState, onTapKeyTimeProgress: { (progress: Double) in
                 onUserSeekToProgress(progress)
-            }).padding(.horizontal, 30)
-        }.background(Color.darkGrey)
+            })
+            .padding(.horizontal, 30)
+            .background(Color.black)
+        }
     }
 }

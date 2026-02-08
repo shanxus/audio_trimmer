@@ -18,19 +18,36 @@ struct MusicTimelineView: View {
     var onUserSeekToProgress: onUserSeekToProgressCallback
     
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 0) {            
             TimelineInfoView(state: $infoState)
+            
+            Spacer()
+                .frame(height: 20)
+            
             TimelineView(state: $progressState, onUserSeekToProgress: onUserSeekToProgress)
                 .frame(height: 80)
+            
+            Spacer()
+                .frame(height: 20)
             
             Button(playPauseState.isPlaying ? "pause" : "play") {
                 playPauseState.isPlaying ? onPauseButtonTap() : onPlayButtonTap()
             }
+            .foregroundStyle(.white)
+            .frame(width: 80, height: 40)
+            .background(.orange)
+            .cornerRadius(8)
+            
+            Spacer()
+                .frame(height: 20)
             
             Button("reset") {
                 onResetButtonTap()
             }
-            
-        }.background(Color.darkGrey)
+            .foregroundStyle(.white)
+            .frame(width: 80, height: 40)
+            .background(.orange)
+            .cornerRadius(8)            
+        }
     }
 }
