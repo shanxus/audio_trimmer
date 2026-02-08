@@ -22,7 +22,6 @@ struct KeyTimeProgressView: View {
                 Rectangle()
                     .foregroundStyle(.gray.opacity(0.3))
                     .frame(maxWidth: .infinity, maxHeight: height)
-                    .clipShape(RoundedRectangle(cornerRadius: height/2))
                     .gesture(DragGesture(minimumDistance: 0)
                         .onChanged { value in
                             if !isDragging {

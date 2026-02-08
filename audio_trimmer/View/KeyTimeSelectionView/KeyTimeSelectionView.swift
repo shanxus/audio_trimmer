@@ -19,7 +19,9 @@ struct KeyTimeSelectionView: View {
             Spacer()
                 .frame(height: 20)
             
-            KeyTimeProgressView(state: $progressState, onTapKeyTimeProgress: { (progress: Double) in
+            KeyTimeProgressView(
+                state: $progressState,
+                onTapKeyTimeProgress: { (progress: Double) in
                 onUserSeekToProgress(progress)
             })
             .padding(.horizontal, 30)

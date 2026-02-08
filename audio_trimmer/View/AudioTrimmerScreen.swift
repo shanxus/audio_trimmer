@@ -19,9 +19,12 @@ struct AudioTrimmerScreen: View {
             Color.darkGrey.ignoresSafeArea()
             
             VStack {
-                KeyTimeSelectionView(infoState: $vm.keyTimeInfoState, progressState: $vm.keyTimeProgressState) { progress in
-                    vm.seek(toProgressRatio: progress)
-                }
+                KeyTimeSelectionView(
+                    infoState: $vm.keyTimeInfoState,
+                    progressState: $vm.keyTimeProgressState,
+                    onUserSeekToProgress: { progress in
+                        vm.seek(toProgressRatio: progress)
+                    })
                 .frame(height: 150)
                             
                 MusicTimelineView(
