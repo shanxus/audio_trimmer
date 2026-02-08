@@ -65,7 +65,7 @@ struct TimelineView: View {
                 isProgrammaticScrolling = true
                 stopTask?.cancel()
                 
-                guard state.programmaticScrollProgress.isValid(), let programmaticScrollProgressValue = state.programmaticScrollProgress.value else { return }
+                guard let programmaticScrollProgressValue = state.programmaticScrollProgress.value else { return }
                 
                 var newPosition = programmaticScrollProgressValue * timelineViewWidth;
                 newPosition = min(newPosition, timelineViewWidth - trimmedAreaWidth)
@@ -75,9 +75,6 @@ struct TimelineView: View {
                     try? await Task.sleep(nanoseconds: 200_000_000)
                     isProgrammaticScrolling = false
                 }
-                
-                // TODO: modify this.
-                state.programmaticScrollProgress.setInvalid()
             }
         }
         .background(.black)

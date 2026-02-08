@@ -5,19 +5,11 @@
 //  Created by Shan OvO on 2026/2/1.
 //
 
+import Foundation
+
 struct ProgrammaticScrollProgress: Equatable {
+    let id: UUID = UUID()
     var value: Double?
-    
-    func isValid() -> Bool {
-        if let value = value, (0...1).contains(value) {
-            return true
-        }
-        return false
-    }
-    
-    mutating func setInvalid() {
-        value = nil
-    }
 }
 
 struct TimelineInfoState {
