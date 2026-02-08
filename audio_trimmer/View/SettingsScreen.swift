@@ -46,7 +46,7 @@ struct SettingsScreen: View {
             
             Button("Go to audio trimmer") {
                 let trackLength = TrackLengthOptions[selectedTrackLengthIndex]
-                let keyTimes = selectedKeyTimeIndexList.map { KeyTimeOptions[$0] }
+                let keyTimes = selectedKeyTimeIndexList.sorted().map { KeyTimeOptions[$0] }
                 let trimmedRangeRatio = TimelineLengthRatioOptions[selectedTimelineLengthRatioIndex]
                 let appConfig = AppConfig(trackLength: trackLength, keyTimes: keyTimes, trimmedRangeRatio: trimmedRangeRatio)
                 onActionButtonTap(appConfig)
