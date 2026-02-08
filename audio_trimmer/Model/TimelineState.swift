@@ -62,7 +62,7 @@ struct TimelineProgressState {
         trimmedDuration: Double? = nil,
         trimmedDurationRatio: Double? = nil,
         programmaticScrollProgress: ProgrammaticScrollProgress? = nil,
-        playbackProgressInRange: Double?
+        playbackProgressInRange: Double? = nil,
     ) -> TimelineProgressState {
         return TimelineProgressState(
             trimmedDuration: trimmedDuration ?? self.trimmedDuration,
