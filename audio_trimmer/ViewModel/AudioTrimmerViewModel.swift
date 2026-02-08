@@ -60,7 +60,7 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
             }
         }.store(in: &cancellables)
         
-        let audioConfig = AudioConfig(totalTrackLength: appConfig.trackLenght, playRangeDurationRatio: appConfig.trimmedRangeRatio)
+        let audioConfig = AudioConfig(totalTrackLength: appConfig.trackLength, playRangeDurationRatio: appConfig.trimmedRangeRatio)
         audioService.setupConfig(audioConfig)
     }
     
@@ -92,7 +92,7 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
     }
     
     private func onAudioStateUpdateWithSeek(audioState: AudioServiceState) {
-        let progress = audioState.currentPlaybackTime / Double(appConfig.trackLenght)
+        let progress = audioState.currentPlaybackTime / Double(appConfig.trackLength)
         
         if audioState.seekActionSource == .KeyTimeSelection {
             timelineProgressState = timelineProgressState.copyWith(programmaticScrollProgress: ProgrammaticScrollProgress(value: progress), playbackProgressInRange: 0)
@@ -106,7 +106,7 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
     }
     
     private func onAudioStateUpdateWithPlayback(audioState: AudioServiceState) {
-        let progress = audioState.currentPlaybackTime / Double(appConfig.trackLenght)
+        let progress = audioState.currentPlaybackTime / Double(appConfig.trackLength)
         
         keyTimeInfoState = keyTimeInfoState.copyWith(playbackProgressRatio: progress)
         timelineInfoState = timelineInfoState.copyWith(playbackTime: audioState.currentPlaybackTime)
@@ -131,7 +131,7 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
     private func onAudioStateUpdateWithReset(audioState: AudioServiceState) {
         timelineProgressState = timelineProgressState.copyWith(playbackProgressInRange: 0)
         
-        let progress = audioState.currentPlaybackTime / Double(appConfig.trackLenght)
+        let progress = audioState.currentPlaybackTime / Double(appConfig.trackLength)
         keyTimeInfoState = keyTimeInfoState.copyWith(playbackProgressRatio: progress)
         timelineInfoState = timelineInfoState.copyWith(playbackTime: audioState.currentPlaybackTime)
     }

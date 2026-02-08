@@ -6,13 +6,13 @@
 //
 
 struct AppConfig: Hashable {
-    var trackLenght: Int
+    var trackLength: Int
     var keyTimes: [Double]
     var trimmedRangeRatio: Double
     
     var trimmedDuration: Double {
-        return trimmedRangeRatio * Double(trackLenght)
+        return trimmedRangeRatio * Double(trackLength)
     }
     
-    static let `default` = AppConfig(trackLenght: 15, keyTimes: [0, 0.5, 0.75, 1], trimmedRangeRatio: 0.1)
+    static let `default` = AppConfig(trackLength: 15, keyTimes: [0, 0.5, 0.75, 1], trimmedRangeRatio: 0.1)
 }
