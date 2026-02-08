@@ -35,39 +35,41 @@ final class AudioServiceImpl: AudioService {
     var playbackRangeStartTime: Double?
     var playbackRangeEndTime: Double?
     
-    func play() {
-        guard let config = audioConfig else { return }
-        
+    func play() {                
         guard !state.isPlaying else { return }
         print("[AudioServiceImpl] play")
         state = state.copyWith(isPlaying: true, updateAction: .playPause)
         
         let interval: TimeInterval = 1.0 / fps
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: {[weak self] _ in
-            guard let weakSelf = self else { return }
-                        
-            var newPlaybackTime = weakSelf.state.currentPlaybackTime + interval
-            let trackLength = Double(config.totalTrackLength)
-            
-            let endTime = min(trackLength, (weakSelf.playbackRangeEndTime ?? trackLength))
-            
-            let playToEnd = newPlaybackTime >= endTime
-            newPlaybackTime = playToEnd ? endTime : newPlaybackTime
-            
-            var playbackProgressInRange: Double = 0
-            if let rangeStartTime = weakSelf.playbackRangeStartTime, let rangeEndTime = weakSelf.playbackRangeEndTime {
-                playbackProgressInRange = ((newPlaybackTime - rangeStartTime) / (rangeEndTime - rangeStartTime)).clamped()
-            }
-            
-            weakSelf.state = weakSelf.state.copyWith(currentPlaybackTime: newPlaybackTime, playbackProgressInRange: playbackProgressInRange, updateAction: .playback)
-            
-            if playToEnd {
-                weakSelf.pause()
-            }
+            self?.tick(delta: interval)
         })
     }
     
-    func pause() {                
+    func tick(delta: TimeInterval) {
+        guard let config = audioConfig else { return }
+        
+        var newPlaybackTime = state.currentPlaybackTime + delta
+        let trackLength = Double(config.totalTrackLength)
+        
+        let endTime = min(trackLength, (playbackRangeEndTime ?? trackLength))
+        
+        let playToEnd = newPlaybackTime >= endTime
+        newPlaybackTime = playToEnd ? endTime : newPlaybackTime
+        
+        var playbackProgressInRange: Double = 0
+        if let rangeStartTime = playbackRangeStartTime, let rangeEndTime = playbackRangeEndTime {
+            playbackProgressInRange = ((newPlaybackTime - rangeStartTime) / (rangeEndTime - rangeStartTime)).clamped()
+        }
+        
+        state = state.copyWith(currentPlaybackTime: newPlaybackTime, playbackProgressInRange: playbackProgressInRange, updateAction: .playback)
+        
+        if playToEnd {
+            pause()
+        }
+    }
+    
+    func pause() {
         guard state.isPlaying else { return }
         print("[AudioServiceImpl] pause")
         state = state.copyWith(isPlaying: false, updateAction: .playPause)
