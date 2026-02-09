@@ -91,8 +91,8 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
         audioService.seek(withRatio: ratio, source: .Timeline)
     }
     
-    private func onAudioStateUpdateWithSeek(audioState: AudioServiceState) {
-        let progress = audioState.currentPlaybackTime / Double(appConfig.trackLength)
+    private func onAudioStateUpdateWithSeek(audioState: AudioServiceState) {        
+        let progress = (audioState.validCurrentPlaybackTime / Double(appConfig.trackLength)).clamped()
         
         if audioState.seekActionSource == .KeyTimeSelection {
             timelineProgressState = timelineProgressState.copyWith(programmaticScrollProgress: ProgrammaticScrollProgress(value: progress), playbackProgressInRange: 0)
@@ -102,7 +102,7 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
         }
         
         keyTimeInfoState = keyTimeInfoState.copyWith(playbackProgressRatio: progress, rangeStartRatio: audioState.rangeStartRatio, rangeEndRatio: audioState.rangeEndRatio)
-        timelineInfoState = timelineInfoState.copyWith(playbackTime: audioState.currentPlaybackTime, rangeStartTime: audioState.playbackRange.startTime, rangeEndTime: audioState.playbackRange.endTime)
+        timelineInfoState = timelineInfoState.copyWith(playbackTime: audioState.validCurrentPlaybackTime, rangeStartTime: audioState.validPlaybackRangeStart, rangeEndTime: audioState.validPlaybackRangeEnd)
     }
     
     private func onAudioStateUpdateWithPlayback(audioState: AudioServiceState) {

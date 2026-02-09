@@ -56,6 +56,18 @@ struct AudioServiceState: Equatable {
         return (playbackRange.endTime / trackDuration).clamped()
     }
     
+    var validCurrentPlaybackTime: Double {
+        return max(0, min(currentPlaybackTime, trackDuration))
+    }
+    
+    var validPlaybackRangeStart: Double {
+        return max(0, min(currentPlaybackTime, trackDuration))
+    }
+    
+    var validPlaybackRangeEnd: Double {
+        return max(0, min(currentPlaybackTime, trackDuration))
+    }
+    
     static let initial: AudioServiceState = .init(currentPlaybackTime: 0, trackDuration: 0, isPlaying: false, playbackProgressInRange: 0, playbackRange: .default)
     
     func copyWith(
