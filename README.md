@@ -40,3 +40,10 @@ This app follows a **View → ViewModel → Service** architecture.
 <img src="docs/architecture.svg" width="800" />
 
 ---
+
+### State Binding Diagram
+
+<img src="audio_trimmer_binding.svg" width="800" />
+
+---
+
