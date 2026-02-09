@@ -35,13 +35,15 @@ This app follows a **View → ViewModel → Service** architecture.
   - `AudioServiceState`: source of truth for playback
   - UI states derived in the ViewModel
 
-### High-level Diagram
+---
+
+## High-level Diagram
 
 <img src="docs/architecture.svg" width="800" />
 
 ---
 
-### State Binding Diagram
+## State Binding Diagram
 
 <img src="docs/audio_trimmer_binding.svg" width="800" />
 
