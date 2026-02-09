@@ -43,7 +43,7 @@ This app follows a **View → ViewModel → Service** architecture.
 
 ### State Binding Diagram
 
-<img src="audio_trimmer_binding.svg" width="800" />
+<img src="docs/audio_trimmer_binding.svg" width="800" />
 
 ---
 
