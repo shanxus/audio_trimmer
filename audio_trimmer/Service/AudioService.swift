@@ -32,9 +32,6 @@ final class AudioServiceImpl: AudioService {
         return $state.eraseToAnyPublisher()
     }
     
-    var playbackRangeStartTime: Double?
-    var playbackRangeEndTime: Double?
-    
     func play() {
         guard !state.isPlaying else { return }
         print("[AudioServiceImpl] play")
@@ -52,15 +49,16 @@ final class AudioServiceImpl: AudioService {
         var newPlaybackTime = state.currentPlaybackTime + delta
         let trackLength = Double(config.totalTrackLength)
         
-        let endTime = min(trackLength, (playbackRangeEndTime ?? trackLength))
+        let endTime = min(trackLength, state.playbackRange.endTime)
         
         let playToEnd = newPlaybackTime >= endTime
         newPlaybackTime = playToEnd ? endTime : newPlaybackTime
         
         var playbackProgressInRange: Double = 0
-        if let rangeStartTime = playbackRangeStartTime, let rangeEndTime = playbackRangeEndTime {
-            playbackProgressInRange = ((newPlaybackTime - rangeStartTime) / (rangeEndTime - rangeStartTime)).clamped()
-        }
+        
+        let rangeStartTime = state.playbackRange.startTime
+        let rangeEndTime = state.playbackRange.endTime
+        playbackProgressInRange = ((newPlaybackTime - rangeStartTime) / (rangeEndTime - rangeStartTime)).clamped()
         
         state = state.copyWith(currentPlaybackTime: newPlaybackTime, playbackProgressInRange: playbackProgressInRange, updateAction: .playback)
         
@@ -79,23 +77,21 @@ final class AudioServiceImpl: AudioService {
     }
     
     func reset() {
-        if let rangeStartTime = playbackRangeStartTime {
-            state = state.copyWith(
-                currentPlaybackTime: rangeStartTime,
-                playbackProgressInRange: 0,
-                updateAction: .reset
-            )
-        }
+        state = state.copyWith(
+            currentPlaybackTime: state.playbackRange.startTime,
+            playbackProgressInRange: 0,
+            updateAction: .reset
+        )
     }
     
     func seek(withRatio ratio: Double, source: SeekActionSource) {
         guard let config = audioConfig else { return }
         
         let newPlaybackTime = Double(config.totalTrackLength) * ratio
-        playbackRangeStartTime = newPlaybackTime
-        playbackRangeEndTime = newPlaybackTime + config.playRangeDuration
+        let newPlaybackRangeStartTime = newPlaybackTime
+        let newPlaybackRangeEndTime = newPlaybackTime + config.playRangeDuration
         
-        let playbackRange = PlaybackRange.from(startTime: playbackRangeStartTime, endTime: playbackRangeEndTime)
+        let playbackRange = PlaybackRange.from(startTime: newPlaybackRangeStartTime, endTime: newPlaybackRangeEndTime)
         
         state = state.copyWith(
             currentPlaybackTime: newPlaybackTime,            
@@ -108,10 +104,10 @@ final class AudioServiceImpl: AudioService {
     
     func setupConfig(_ config: AudioConfig) {
         audioConfig = config
-        playbackRangeStartTime = 0
-        playbackRangeEndTime = config.playRangeDuration
+        let newPlaybackRangeStartTime: Double = 0
+        let newPlaybackRangeEndTime = config.playRangeDuration
         
-        let playbackRange = PlaybackRange.from(startTime: playbackRangeStartTime, endTime: playbackRangeEndTime)
+        let playbackRange = PlaybackRange.from(startTime: newPlaybackRangeStartTime, endTime: newPlaybackRangeEndTime)
         state = state.copyWith(
             playbackEndTime: Double(config.totalTrackLength),
             playbackRange: playbackRange,
