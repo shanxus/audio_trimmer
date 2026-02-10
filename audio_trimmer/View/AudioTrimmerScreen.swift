@@ -20,17 +20,17 @@ struct AudioTrimmerScreen: View {
             
             VStack {
                 KeyTimeSelectionView(
-                    infoState: $vm.keyTimeInfoState,
-                    progressState: $vm.keyTimeProgressState,
+                    infoState: vm.keyTimeInfoState,
+                    progressState: vm.keyTimeProgressState,
                     onUserSeekToProgress: { progress in
                         vm.seek(toProgressRatio: progress)
                     })
                 .frame(height: 150)
                             
                 MusicTimelineView(
-                    infoState: $vm.timelineInfoState,
-                    progressState: $vm.timelineProgressState,
-                    playPauseState: $vm.timelinePlayPauseState,
+                    infoState: vm.timelineInfoState,
+                    progressState: vm.timelineProgressState,
+                    playPauseState: vm.timelinePlayPauseState,
                     onPlayButtonTap: {
                         vm.play()
                     },

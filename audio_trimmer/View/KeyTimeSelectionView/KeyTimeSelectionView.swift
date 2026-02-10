@@ -7,20 +7,20 @@
 import SwiftUI
 
 struct KeyTimeSelectionView: View {
-    @Binding var infoState: KeyTimeInfoState
-    @Binding var progressState: KeyTimeProgressState
+    let infoState: KeyTimeInfoState
+    let progressState: KeyTimeProgressState
     
     var onUserSeekToProgress: onUserSeekToProgressCallback
     
     var body: some View {
         VStack {
-            KeyTimeInfoView(state: $infoState)
+            KeyTimeInfoView(state: infoState)
             
             Spacer()
                 .frame(height: 20)
             
             KeyTimeProgressView(
-                state: $progressState,
+                state: progressState,
                 onTapKeyTimeProgress: { (progress: Double) in
                 onUserSeekToProgress(progress)
             })

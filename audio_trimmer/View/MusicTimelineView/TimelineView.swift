@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TimelineView: View {
-    @Binding var state: TimelineProgressState
+    let state: TimelineProgressState
     
     var onUserSeekToProgress: onUserSeekToProgressCallback
     

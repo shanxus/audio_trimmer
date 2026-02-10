@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct MusicTimelineView: View {    
-    @Binding var infoState: TimelineInfoState
-    @Binding var progressState: TimelineProgressState
-    @Binding var playPauseState: TimelinePlayPauseState
+    let infoState: TimelineInfoState
+    let progressState: TimelineProgressState
+    let playPauseState: TimelinePlayPauseState
     
     var onPlayButtonTap: () -> Void
     var onPauseButtonTap: () -> Void
@@ -19,12 +19,12 @@ struct MusicTimelineView: View {
     
     var body: some View {
         VStack(spacing: 0) {            
-            TimelineInfoView(state: $infoState)
+            TimelineInfoView(state: infoState)
             
             Spacer()
                 .frame(height: 20)
             
-            TimelineView(state: $progressState, onUserSeekToProgress: onUserSeekToProgress)
+            TimelineView(state: progressState, onUserSeekToProgress: onUserSeekToProgress)
                 .frame(height: 80)
             
             Spacer()

@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct TimelineInfoView: View {
-    @Binding var state: TimelineInfoState
+    let state: TimelineInfoState
     
     var body: some View {
         VStack(spacing: 0) {

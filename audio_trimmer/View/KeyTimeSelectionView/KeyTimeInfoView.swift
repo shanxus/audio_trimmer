@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct KeyTimeInfoView: View {
-    @Binding var state: KeyTimeInfoState
+    let state: KeyTimeInfoState
     
     var body: some View {
         VStack {

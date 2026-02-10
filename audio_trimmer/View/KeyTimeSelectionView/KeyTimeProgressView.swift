@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct KeyTimeProgressView: View {
-    @Binding var state: KeyTimeProgressState
+    let state: KeyTimeProgressState
     let height: CGFloat = 24
     let onTapKeyTimeProgress: (Double) -> Void
     
