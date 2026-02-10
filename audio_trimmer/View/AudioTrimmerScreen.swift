@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct AudioTrimmerScreen: View {    
-    @StateObject private var vm: AudioTrimmerViewModel
+struct AudioTrimmerScreen<VM: AudioTrimmerViewModel>: View {
+    @StateObject private var vm: VM
     
-    init(audioService: AudioService, appConfig: AppConfig) {
-        _vm = StateObject(wrappedValue: AudioTrimmerViewModelImpl(audioService: audioService, appConfig: appConfig))
+    init(vm: VM) {
+        _vm = StateObject(wrappedValue: vm)
     }
     
     var body: some View {

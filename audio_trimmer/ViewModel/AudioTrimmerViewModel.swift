@@ -13,13 +13,27 @@ enum SeekActionSource: Equatable {
     case Timeline
 }
 
-class AudioTrimmerViewModel: ObservableObject {
-    func play() {}
-    func pause() {}
-    func reset() {}
-    func seek(toProgressRatio ratio: Double) {}
+protocol AudioTrimmerViewModel: ObservableObject {
+    func play()
+    func pause()
+    func reset()
+    func seek(toProgressRatio ratio: Double)
     
-    func onTimelineScroll(toRatio ratio: Double) {}
+    func onTimelineScroll(toRatio ratio: Double)
+    
+    var keyTimeInfoState: KeyTimeInfoState { get }
+    var keyTimeProgressState: KeyTimeProgressState { get }
+    
+    var timelineInfoState: TimelineInfoState { get }
+    var timelineProgressState: TimelineProgressState { get }
+    
+    var timelinePlayPauseState: TimelinePlayPauseState { get }
+}
+
+final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
+    private let audioService: AudioService
+    private(set) var appConfig: AppConfig
+    private var cancellables: Set<AnyCancellable> = []
     
     @Published var keyTimeInfoState: KeyTimeInfoState = .default
     @Published var keyTimeProgressState: KeyTimeProgressState = .default
@@ -28,17 +42,10 @@ class AudioTrimmerViewModel: ObservableObject {
     @Published var timelineProgressState: TimelineProgressState = .default
     
     @Published var timelinePlayPauseState: TimelinePlayPauseState = .default
-}
-
-final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
-    private let audioService: AudioService
-    private(set) var appConfig: AppConfig
-    private var cancellables: Set<AnyCancellable> = []
     
     init(audioService: AudioService, appConfig: AppConfig) {
         self.audioService = audioService
         self.appConfig = appConfig
-        super.init()
         
         audioService.statePublisher
             .receive(on: DispatchQueue.main)
@@ -64,29 +71,24 @@ final class AudioTrimmerViewModelImpl: AudioTrimmerViewModel {
         audioService.setupConfig(audioConfig)
     }
     
-    override
     func play() {
         audioService.play()
     }
     
-    override
     func pause() {
         audioService.pause()
     }
     
-    override
     func reset() {
         audioService.reset()
     }
     
-    override
     func seek(toProgressRatio ratio: Double) {
         let maxSeekProgress = 1 - appConfig.trimmedRangeRatio
         let clampedRatio = min(maxSeekProgress, max(0, ratio))
         audioService.seek(withRatio: clampedRatio, source: .KeyTimeSelection)
     }
     
-    override
     func onTimelineScroll(toRatio ratio: Double) {
         audioService.seek(withRatio: ratio, source: .Timeline)
     }

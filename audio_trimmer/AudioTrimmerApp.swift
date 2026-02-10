@@ -27,7 +27,8 @@ struct RootView: View {
             .navigationDestination(for: Screen.self) { screen in
                 switch screen {
                 case .AudioTrimmerScreen(let appConfig):
-                    AudioTrimmerScreen(audioService: AudioServiceImpl(), appConfig: appConfig)
+                    let vm = AudioTrimmerViewModelImpl(audioService: AudioServiceImpl(), appConfig: appConfig)
+                    AudioTrimmerScreen(vm: vm)
                 }
             }
         }
