@@ -61,11 +61,11 @@ struct AudioServiceState: Equatable {
     }
     
     var validPlaybackRangeStart: Double {
-        return max(0, min(currentPlaybackTime, trackDuration))
+        return max(0, min(playbackRange.startTime, trackDuration))
     }
     
     var validPlaybackRangeEnd: Double {
-        return max(0, min(currentPlaybackTime, trackDuration))
+        return max(0, min(playbackRange.endTime, trackDuration))
     }
     
     static let initial: AudioServiceState = .init(currentPlaybackTime: 0, trackDuration: 0, isPlaying: false, playbackProgressInRange: 0, playbackRange: .default)
